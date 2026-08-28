@@ -13,7 +13,7 @@ namespace Commerce\FeaturedColors\Test\Unit\Ui\DataProvider\Product\Form\Modifie
 use Commerce\FeaturedColors\Api\Data\FeaturedColorInterface;
 use Commerce\FeaturedColors\Model\Config;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
-use Commerce\FeaturedColors\Test\Unit\Fake\FormProduct;
+use Commerce\FeaturedColors\Test\Support\FormProduct;
 use Commerce\FeaturedColors\Ui\DataProvider\Product\Form\Modifier\FeaturedColorField;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Catalog\Model\Locator\LocatorInterface;

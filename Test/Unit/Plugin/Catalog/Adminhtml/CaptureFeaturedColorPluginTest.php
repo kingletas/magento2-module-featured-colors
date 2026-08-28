@@ -13,7 +13,7 @@ namespace Commerce\FeaturedColors\Test\Unit\Plugin\Catalog\Adminhtml;
 use Commerce\FeaturedColors\Plugin\Catalog\Adminhtml\CaptureFeaturedColorPlugin;
 use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper;
-use Commerce\FeaturedColors\Test\Unit\Fake\FormProduct;
+use Commerce\FeaturedColors\Test\Support\FormProduct;
 use Magento\Framework\App\RequestInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

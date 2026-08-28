@@ -8,7 +8,7 @@
  */
 declare(strict_types=1);
 
-namespace Commerce\FeaturedColors\Test\Unit\Fake;
+namespace Commerce\FeaturedColors\Test\Support;
 
 use Magento\Catalog\Model\Product;
 

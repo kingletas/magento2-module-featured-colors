@@ -17,7 +17,7 @@ use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
 use Commerce\FeaturedColors\Observer\PersistFeaturedColor;
 use Commerce\FeaturedColors\Plugin\Catalog\Adminhtml\CaptureFeaturedColorPlugin;
-use Commerce\FeaturedColors\Test\Unit\Fake\FormProduct;
+use Commerce\FeaturedColors\Test\Support\FormProduct;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\Event;
