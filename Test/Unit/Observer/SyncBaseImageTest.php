@@ -12,12 +12,12 @@ namespace Commerce\FeaturedColors\Test\Unit\Observer;
 
 use Commerce\FeaturedColors\Api\Data\FeaturedColorInterface;
 use Commerce\FeaturedColors\Observer\SyncBaseImage;
-use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
 use Magento\Catalog\Model\ResourceModel\Product\Action as ProductAction;
 use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class SyncBaseImageTest extends TestCase
@@ -25,13 +25,13 @@ class SyncBaseImageTest extends TestCase
     /** @var array<int, array{ids: int[], attributes: array<string, string>, storeId: int}> */
     private array $updates = [];
 
-    private RecordingLogger $logger;
+    private LoggerInterface&MockObject $logger;
     private ProductAction&MockObject $productAction;
 
     protected function setUp(): void
     {
         $this->updates = [];
-        $this->logger = new RecordingLogger();
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->productAction = $this->createMock(ProductAction::class);
         $this->productAction->method('updateAttributes')->willReturnCallback(
@@ -151,6 +151,10 @@ class SyncBaseImageTest extends TestCase
      */
     public function testAFailedUpdateIsLoggedAndTheRestStillRun(): void
     {
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with($this->stringContains('base images'));
+
         $calls = 0;
         $this->productAction = $this->createMock(ProductAction::class);
         $this->productAction->method('updateAttributes')->willReturnCallback(
@@ -173,8 +177,6 @@ class SyncBaseImageTest extends TestCase
         ]));
 
         $this->assertCount(1, $this->updates);
-        $this->assertCount(1, $this->logger->errors);
-        $this->assertStringContainsString('base images', $this->logger->errors[0]);
     }
 
     /**

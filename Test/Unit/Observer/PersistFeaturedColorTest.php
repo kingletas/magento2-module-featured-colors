@@ -17,7 +17,6 @@ use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
 use Commerce\FeaturedColors\Observer\PersistFeaturedColor;
 use Commerce\FeaturedColors\Plugin\Catalog\Adminhtml\CaptureFeaturedColorPlugin;
-use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
 use Commerce\FeaturedColors\Test\Unit\Fake\FormProduct;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
@@ -26,6 +25,7 @@ use Magento\Framework\Event\Observer;
 use Magento\Framework\Message\ManagerInterface as MessageManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class PersistFeaturedColorTest extends TestCase
@@ -39,7 +39,7 @@ class PersistFeaturedColorTest extends TestCase
     /** @var string[] */
     private array $warnings = [];
 
-    private RecordingLogger $logger;
+    private LoggerInterface&MockObject $logger;
     private FeaturedColorApplier&MockObject $applier;
     private FeaturedColorResource&MockObject $resource;
     private AssignmentResult $result;
@@ -49,7 +49,7 @@ class PersistFeaturedColorTest extends TestCase
         $this->applied = [];
         $this->deletes = [];
         $this->warnings = [];
-        $this->logger = new RecordingLogger();
+        $this->logger = $this->createMock(LoggerInterface::class);
         $this->result = new AssignmentResult(1);
 
         $this->applier = $this->createMock(FeaturedColorApplier::class);
@@ -176,12 +176,13 @@ class PersistFeaturedColorTest extends TestCase
      */
     public function testAFailureNeverAbortsTheProductSave(): void
     {
+        $this->logger->expects($this->once())->method('error');
+
         $this->applier = $this->createMock(FeaturedColorApplier::class);
         $this->applier->method('apply')->willThrowException(new RuntimeException('lock wait timeout'));
 
         $this->observer()->execute($this->event($this->product('SKU-1', 'Ceil Blue')));
 
-        $this->assertCount(1, $this->logger->errors);
         $this->assertCount(1, $this->warnings);
         $this->assertStringContainsString('was saved', $this->warnings[0]);
     }

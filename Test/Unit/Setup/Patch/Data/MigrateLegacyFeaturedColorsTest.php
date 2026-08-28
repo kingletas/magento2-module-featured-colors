@@ -13,13 +13,13 @@ namespace Commerce\FeaturedColors\Test\Unit\Setup\Patch\Data;
 use Commerce\FeaturedColors\Api\Data\FeaturedColorInterface;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
 use Commerce\FeaturedColors\Setup\Patch\Data\MigrateLegacyFeaturedColors;
-use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Serialize\Serializer\Json;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class MigrateLegacyFeaturedColorsTest extends TestCase
 {
@@ -31,13 +31,13 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
 
     private bool $legacyTableExists = true;
     private int $fetches = 0;
-    private RecordingLogger $logger;
+    private LoggerInterface&MockObject $logger;
 
     protected function setUp(): void
     {
         $this->inserts = [];
         $this->fetches = 0;
-        $this->logger = new RecordingLogger();
+        $this->logger = $this->createMock(LoggerInterface::class);
         $this->pages = [[$this->legacyRow(10, '{"label":"Ceil Blue","child_id":"110","url":"https://cdn/x.jpg"}')]];
     }
 
@@ -193,10 +193,11 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
      */
     public function testTheMigrationReportsHowManyRowsItMoved(): void
     {
-        $this->patch()->apply();
+        $this->logger->expects($this->once())
+            ->method('info')
+            ->with($this->stringContains('1'));
 
-        $this->assertCount(1, $this->logger->infos);
-        $this->assertStringContainsString('1', $this->logger->infos[0]);
+        $this->patch()->apply();
     }
 
     public function testApplyReturnsThePatchForChaining(): void

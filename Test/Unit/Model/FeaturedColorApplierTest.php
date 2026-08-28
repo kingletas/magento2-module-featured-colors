@@ -17,7 +17,6 @@ use Commerce\FeaturedColors\Model\Catalog\ColorVariantResolver;
 use Commerce\FeaturedColors\Model\Config;
 use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
-use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\App\ResourceConnection;
@@ -27,6 +26,7 @@ use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class FeaturedColorApplierTest extends TestCase
@@ -57,7 +57,7 @@ class FeaturedColorApplierTest extends TestCase
     /** @var array<int, array{condition: string, value: mixed}> */
     private array $conditions = [];
 
-    private RecordingLogger $logger;
+    private LoggerInterface&MockObject $logger;
     private FeaturedColorResource&MockObject $resource;
     private ColorVariantResolver&MockObject $variantResolver;
     private bool $syncBaseImage = false;
@@ -68,7 +68,7 @@ class FeaturedColorApplierTest extends TestCase
         $this->events = [];
         $this->transactions = [];
         $this->conditions = [];
-        $this->logger = new RecordingLogger();
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->resource = $this->createMock(FeaturedColorResource::class);
         $this->resource->method('loadByProducts')->willReturnCallback(fn (): array => $this->existing);
@@ -268,6 +268,8 @@ class FeaturedColorApplierTest extends TestCase
      */
     public function testAFailedWriteIsRolledBackAndNotAnnounced(): void
     {
+        $this->logger->expects($this->once())->method('error');
+
         $this->resource = $this->createMock(FeaturedColorResource::class);
         $this->resource->method('loadByProducts')->willReturn([]);
         $this->resource->method('upsertMany')->willThrowException(new RuntimeException('deadlock'));
@@ -281,7 +283,6 @@ class FeaturedColorApplierTest extends TestCase
 
         $this->assertSame(['begin', 'rollback'], $this->transactions);
         $this->assertSame([], $this->events);
-        $this->assertCount(1, $this->logger->errors);
     }
 
     /**
@@ -290,6 +291,8 @@ class FeaturedColorApplierTest extends TestCase
      */
     public function testAFailingVariantResolverFailsTheBatchOnce(): void
     {
+        $this->logger->expects($this->once())->method('error');
+
         $this->variantResolver = $this->createMock(ColorVariantResolver::class);
         $this->variantResolver->method('resolveForParents')
             ->willThrowException(new RuntimeException('attribute missing'));
@@ -300,7 +303,6 @@ class FeaturedColorApplierTest extends TestCase
         ]);
 
         $this->assertCount(1, $result->errors);
-        $this->assertCount(1, $this->logger->errors);
         $this->assertSame([], $this->upserts);
     }
 
