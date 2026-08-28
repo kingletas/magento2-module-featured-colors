@@ -13,9 +13,9 @@ namespace Commerce\FeaturedColors\Test\Unit\Ui\DataProvider\Product\Form\Modifie
 use Commerce\FeaturedColors\Api\Data\FeaturedColorInterface;
 use Commerce\FeaturedColors\Model\Config;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
-use Commerce\FeaturedColors\Test\Unit\Fake\ArrayScopeConfig;
 use Commerce\FeaturedColors\Test\Unit\Fake\FormProduct;
 use Commerce\FeaturedColors\Ui\DataProvider\Product\Form\Modifier\FeaturedColorField;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Catalog\Model\Locator\LocatorInterface;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Store\Api\Data\StoreInterface;
@@ -165,10 +165,26 @@ class FeaturedColorFieldTest extends TestCase
         );
 
         $config = new Config(
-            new ArrayScopeConfig(['test_featuredcolors/general/enabled' => $enabled ? '1' : '0']),
+            $this->scopeConfig(['test_featuredcolors/general/enabled' => $enabled ? '1' : '0']),
             'test_featuredcolors'
         );
 
         return new FeaturedColorField($locator, $resource, $config);
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    private function scopeConfig(array $values): ScopeConfigInterface
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->method('getValue')->willReturnCallback(
+            static fn (string $path): mixed => $values[$path] ?? null
+        );
+        $scopeConfig->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => !in_array($values[$path] ?? null, [null, '', '0', 0, false], true)
+        );
+
+        return $scopeConfig;
     }
 }

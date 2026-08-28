@@ -17,8 +17,8 @@ use Commerce\FeaturedColors\Model\Catalog\ColorVariantResolver;
 use Commerce\FeaturedColors\Model\Config;
 use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
-use Commerce\FeaturedColors\Test\Unit\Fake\ArrayScopeConfig;
 use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
@@ -399,7 +399,7 @@ class FeaturedColorApplierTest extends TestCase
         $dateTime->method('gmtDate')->willReturn(self::NOW);
 
         $config = new Config(
-            new ArrayScopeConfig([
+            $this->scopeConfig([
                 'test_featuredcolors/general/sync_base_image' => $this->syncBaseImage ? '1' : '0',
             ]),
             'test_featuredcolors'
@@ -415,5 +415,21 @@ class FeaturedColorApplierTest extends TestCase
             $config,
             $this->logger
         );
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    private function scopeConfig(array $values): ScopeConfigInterface
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->method('getValue')->willReturnCallback(
+            static fn (string $path): mixed => $values[$path] ?? null
+        );
+        $scopeConfig->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => !in_array($values[$path] ?? null, [null, '', '0', 0, false], true)
+        );
+
+        return $scopeConfig;
     }
 }

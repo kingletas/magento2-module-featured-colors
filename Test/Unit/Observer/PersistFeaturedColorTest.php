@@ -17,9 +17,9 @@ use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
 use Commerce\FeaturedColors\Observer\PersistFeaturedColor;
 use Commerce\FeaturedColors\Plugin\Catalog\Adminhtml\CaptureFeaturedColorPlugin;
-use Commerce\FeaturedColors\Test\Unit\Fake\ArrayScopeConfig;
 use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
 use Commerce\FeaturedColors\Test\Unit\Fake\FormProduct;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\Event;
 use Magento\Framework\Event\Observer;
@@ -233,7 +233,7 @@ class PersistFeaturedColorTest extends TestCase
         );
 
         $config = new Config(
-            new ArrayScopeConfig(['test_featuredcolors/general/enabled' => $enabled ? '1' : '0']),
+            $this->scopeConfig(['test_featuredcolors/general/enabled' => $enabled ? '1' : '0']),
             'test_featuredcolors'
         );
 
@@ -244,5 +244,21 @@ class PersistFeaturedColorTest extends TestCase
             $config,
             $this->logger
         );
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    private function scopeConfig(array $values): ScopeConfigInterface
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->method('getValue')->willReturnCallback(
+            static fn (string $path): mixed => $values[$path] ?? null
+        );
+        $scopeConfig->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => !in_array($values[$path] ?? null, [null, '', '0', 0, false], true)
+        );
+
+        return $scopeConfig;
     }
 }

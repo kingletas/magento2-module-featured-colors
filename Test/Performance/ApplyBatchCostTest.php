@@ -16,15 +16,15 @@ use Commerce\FeaturedColors\Model\Catalog\ColorVariantResolver;
 use Commerce\FeaturedColors\Model\Config;
 use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
-use Commerce\FeaturedColors\Test\Unit\Fake\ArrayScopeConfig;
-use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
 use Commerce\Foundation\Test\Support\BudgetAssertions;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Select;
 use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * The applier's documented query budget, made checkable.
@@ -180,8 +180,8 @@ class ApplyBatchCostTest extends TestCase
             $variantResolver,
             $this->createMock(EventManagerInterface::class),
             $dateTime,
-            new Config(new ArrayScopeConfig([]), 'test_featuredcolors'),
-            new RecordingLogger()
+            new Config($this->scopeConfig([]), 'test_featuredcolors'),
+            $this->createMock(LoggerInterface::class)
         );
     }
 
@@ -197,5 +197,21 @@ class ApplyBatchCostTest extends TestCase
         }
 
         return $catalogue;
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    private function scopeConfig(array $values): ScopeConfigInterface
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->method('getValue')->willReturnCallback(
+            static fn (string $path): mixed => $values[$path] ?? null
+        );
+        $scopeConfig->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => !in_array($values[$path] ?? null, [null, '', '0', 0, false], true)
+        );
+
+        return $scopeConfig;
     }
 }

@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Commerce\FeaturedColors\Test\Unit\Model;
 
 use Commerce\FeaturedColors\Model\Config;
-use Commerce\FeaturedColors\Test\Unit\Fake\ArrayScopeConfig;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
@@ -23,7 +23,7 @@ class ConfigTest extends TestCase
     public function testEveryPathIsReadUnderTheConfiguredSection(): void
     {
         $config = new Config(
-            new ArrayScopeConfig([
+            $this->scopeConfig([
                 'acme_featuredcolors/general/enabled' => '1',
                 'acme_featuredcolors/general/sync_base_image' => '1',
                 'acme_featuredcolors/general/color_attribute' => 'colour_family',
@@ -93,6 +93,22 @@ class ConfigTest extends TestCase
             $qualified['test_featuredcolors/' . $path] = $value;
         }
 
-        return new Config(new ArrayScopeConfig($qualified), 'test_featuredcolors');
+        return new Config($this->scopeConfig($qualified), 'test_featuredcolors');
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    private function scopeConfig(array $values): ScopeConfigInterface
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->method('getValue')->willReturnCallback(
+            static fn (string $path): mixed => $values[$path] ?? null
+        );
+        $scopeConfig->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => !in_array($values[$path] ?? null, [null, '', '0', 0, false], true)
+        );
+
+        return $scopeConfig;
     }
 }

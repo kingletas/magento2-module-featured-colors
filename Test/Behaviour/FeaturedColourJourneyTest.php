@@ -18,8 +18,7 @@ use Commerce\FeaturedColors\Model\Config;
 use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
 use Commerce\FeaturedColors\Observer\SyncBaseImage;
-use Commerce\FeaturedColors\Test\Unit\Fake\ArrayScopeConfig;
-use Commerce\FeaturedColors\Test\Unit\Fake\RecordingLogger;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Catalog\Model\ResourceModel\Product\Action as ProductAction;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\DB\Adapter\AdapterInterface;
@@ -29,6 +28,7 @@ use Magento\Framework\Event\ManagerInterface as EventManagerInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 /**
  * A merchandiser sets the colour a configurable leads with, and the listing
@@ -64,7 +64,7 @@ class FeaturedColourJourneyTest extends TestCase
 
     private bool $writeFails = false;
 
-    private RecordingLogger $logger;
+    private LoggerInterface $logger;
 
     protected function setUp(): void
     {
@@ -83,7 +83,7 @@ class FeaturedColourJourneyTest extends TestCase
         $this->imageUpdates = [];
         $this->transactions = [];
         $this->writeFails = false;
-        $this->logger = new RecordingLogger();
+        $this->logger = $this->createMock(LoggerInterface::class);
         $this->settings = [
             self::SECTION . '/general/enabled' => '1',
             self::SECTION . '/general/sync_base_image' => '1',
@@ -231,7 +231,7 @@ class FeaturedColourJourneyTest extends TestCase
 
     private function applier(): FeaturedColorApplier
     {
-        $config = new Config(new ArrayScopeConfig($this->settings), self::SECTION);
+        $config = new Config($this->scopeConfig($this->settings), self::SECTION);
 
         return new FeaturedColorApplier(
             $this->resourceConnection(),
@@ -381,5 +381,21 @@ class FeaturedColourJourneyTest extends TestCase
     private function imageAttributes(string $path): array
     {
         return ['image' => $path, 'small_image' => $path, 'thumbnail' => $path];
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    private function scopeConfig(array $values): ScopeConfigInterface
+    {
+        $scopeConfig = $this->createMock(ScopeConfigInterface::class);
+        $scopeConfig->method('getValue')->willReturnCallback(
+            static fn (string $path): mixed => $values[$path] ?? null
+        );
+        $scopeConfig->method('isSetFlag')->willReturnCallback(
+            static fn (string $path): bool => !in_array($values[$path] ?? null, [null, '', '0', 0, false], true)
+        );
+
+        return $scopeConfig;
     }
 }
