@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * The applier's documented query budget, made checkable.
  */
-final class ApplyBatchCostTest extends TestCase
+class ApplyBatchCostTest extends TestCase
 {
     use BudgetAssertions;
 
@@ -45,7 +45,7 @@ final class ApplyBatchCostTest extends TestCase
 
     public function testApplyingABatchCostsTheSameWhateverItsSize(): void
     {
-        self::assertConstantCost(
+        $this->assertConstantCost(
             'round trips while applying featured colours',
             function (int $rows): int {
                 $this->calls = [];
@@ -65,7 +65,7 @@ final class ApplyBatchCostTest extends TestCase
     {
         $this->applier()->apply($this->assignments(500));
 
-        self::assertSame(
+        $this->assertSame(
             [
                 'sku lookup' => 1,
                 'variant resolution' => 1,
@@ -90,8 +90,8 @@ final class ApplyBatchCostTest extends TestCase
 
         $this->applier()->apply($assignments);
 
-        self::assertSame(2, $this->calls['sku lookup'] ?? 0);
-        self::assertSame(2, $this->calls['write'] ?? 0);
+        $this->assertSame(2, $this->calls['sku lookup'] ?? 0);
+        $this->assertSame(2, $this->calls['write'] ?? 0);
     }
 
     /**

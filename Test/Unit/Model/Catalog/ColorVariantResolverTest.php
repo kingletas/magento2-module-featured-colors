@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * One query for a whole batch, and a deterministic winner within it.
  */
-final class ColorVariantResolverTest extends TestCase
+class ColorVariantResolverTest extends TestCase
 {
     private AdapterInterface&MockObject $connection;
     private ResourceConnection&MockObject $resourceConnection;
@@ -77,7 +77,7 @@ final class ColorVariantResolverTest extends TestCase
 
         $resolved = $this->resolver()->resolveForParents([1]);
 
-        self::assertSame(
+        $this->assertSame(
             [1 => [55 => ['child_id' => 10, 'sku' => 'SHIRT-NAVY-M', 'image_path' => '/n/a/navy.jpg']]],
             $resolved
         );
@@ -93,8 +93,8 @@ final class ColorVariantResolverTest extends TestCase
 
         $resolved = $this->resolver()->resolveForParents([1, 2, 3]);
 
-        self::assertSame(1, $this->queries);
-        self::assertCount(3, $resolved);
+        $this->assertSame(1, $this->queries);
+        $this->assertCount(3, $resolved);
     }
 
     /**
@@ -110,14 +110,14 @@ final class ColorVariantResolverTest extends TestCase
 
         $resolved = $this->resolver()->resolveForParents([1]);
 
-        self::assertSame(10, $resolved[1][55]['child_id']);
+        $this->assertSame(10, $resolved[1][55]['child_id']);
     }
 
     public function testTheQueryOrdersByChildIdSoTheTieBreakIsTheDatabasesToo(): void
     {
         $this->resolver()->resolveForParents([1]);
 
-        self::assertContains('child.entity_id ASC', $this->orders);
+        $this->assertContains('child.entity_id ASC', $this->orders);
     }
 
     /**
@@ -129,7 +129,7 @@ final class ColorVariantResolverTest extends TestCase
 
         $conditions = array_map(static fn (array $where): string => $where[0], $this->wheres);
 
-        self::assertContains('status.value IS NULL OR status.value = ?', $conditions);
+        $this->assertContains('status.value IS NULL OR status.value = ?', $conditions);
     }
 
     /**
@@ -140,21 +140,21 @@ final class ColorVariantResolverTest extends TestCase
     {
         $this->rows = [$this->row(1, 10, 'SHIRT-NAVY-M', 55, 'no_selection')];
 
-        self::assertNull($this->resolver()->resolveForParents([1])[1][55]['image_path']);
+        $this->assertNull($this->resolver()->resolveForParents([1])[1][55]['image_path']);
     }
 
     public function testAnAbsentImageIsNull(): void
     {
         $this->rows = [$this->row(1, 10, 'SHIRT-NAVY-M', 55, null)];
 
-        self::assertNull($this->resolver()->resolveForParents([1])[1][55]['image_path']);
+        $this->assertNull($this->resolver()->resolveForParents([1])[1][55]['image_path']);
     }
 
     public function testAnEmptyImageIsNull(): void
     {
         $this->rows = [$this->row(1, 10, 'SHIRT-NAVY-M', 55, '')];
 
-        self::assertNull($this->resolver()->resolveForParents([1])[1][55]['image_path']);
+        $this->assertNull($this->resolver()->resolveForParents([1])[1][55]['image_path']);
     }
 
     public function testTheJoinUsesEntityIdOnOpenSource(): void
@@ -163,7 +163,7 @@ final class ColorVariantResolverTest extends TestCase
 
         $this->resolver()->resolveForParents([1]);
 
-        self::assertContains('link.parent_id = parent.`entity_id`', $this->joins);
+        $this->assertContains('link.parent_id = parent.`entity_id`', $this->joins);
     }
 
     /**
@@ -176,13 +176,13 @@ final class ColorVariantResolverTest extends TestCase
 
         $this->resolver()->resolveForParents([1]);
 
-        self::assertContains('link.parent_id = parent.`row_id`', $this->joins);
+        $this->assertContains('link.parent_id = parent.`row_id`', $this->joins);
     }
 
     public function testAnEmptyBatchCostsNoQuery(): void
     {
-        self::assertSame([], $this->resolver()->resolveForParents([]));
-        self::assertSame(0, $this->queries);
+        $this->assertSame([], $this->resolver()->resolveForParents([]));
+        $this->assertSame(0, $this->queries);
     }
 
     public function testDuplicateParentIdsAreCollapsedBeforeQuerying(): void
@@ -194,7 +194,7 @@ final class ColorVariantResolverTest extends TestCase
             static fn (array $where): bool => $where[0] === 'parent.entity_id IN (?)'
         ));
 
-        self::assertSame([1], $inWhere[0][1]);
+        $this->assertSame([1], $inWhere[0][1]);
     }
 
     public function testTheColourAttributeCodeIsAnArgument(): void
@@ -212,7 +212,7 @@ final class ColorVariantResolverTest extends TestCase
 
         $this->resolver($eavConfig)->resolveForParents([1], 'colour_family');
 
-        self::assertContains('colour_family', $codes);
+        $this->assertContains('colour_family', $codes);
     }
 
     /**
@@ -247,7 +247,7 @@ final class ColorVariantResolverTest extends TestCase
         $metadataPool = $this->createMock(MetadataPool::class);
         $metadataPool->method('getMetadata')
             ->willReturnCallback(function (string $entity) use ($metadata): EntityMetadataInterface {
-                self::assertSame(ProductInterface::class, $entity);
+                $this->assertSame(ProductInterface::class, $entity);
 
                 return $metadata;
             });

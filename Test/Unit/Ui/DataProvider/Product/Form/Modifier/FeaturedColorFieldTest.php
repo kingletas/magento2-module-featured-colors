@@ -50,7 +50,7 @@ class FeaturedColorFieldTest extends TestCase
 
         $data = $this->modifier()->modifyData([]);
 
-        self::assertSame(
+        $this->assertSame(
             'Ceil Blue',
             $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]
         );
@@ -68,8 +68,8 @@ class FeaturedColorFieldTest extends TestCase
 
         $data = $this->modifier()->modifyData([]);
 
-        self::assertSame('Navy', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
-        self::assertSame([['productId' => 10, 'storeId' => 2]], $this->lookups);
+        $this->assertSame('Navy', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
+        $this->assertSame([['productId' => 10, 'storeId' => 2]], $this->lookups);
     }
 
     /**
@@ -83,15 +83,15 @@ class FeaturedColorFieldTest extends TestCase
 
         $data = $this->modifier()->modifyData([]);
 
-        self::assertSame('Ceil Blue', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
-        self::assertSame([2, 0], array_column($this->lookups, 'storeId'));
+        $this->assertSame('Ceil Blue', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
+        $this->assertSame([2, 0], array_column($this->lookups, 'storeId'));
     }
 
     public function testAProductWithNoAssignmentGetsAnEmptyField(): void
     {
         $data = $this->modifier()->modifyData([]);
 
-        self::assertSame('', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
+        $this->assertSame('', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
     }
 
     /**
@@ -104,8 +104,8 @@ class FeaturedColorFieldTest extends TestCase
 
         $data = $this->modifier()->modifyData([10 => ['product' => ['name' => 'Scrub Top']]]);
 
-        self::assertSame('Scrub Top', $data[10]['product']['name']);
-        self::assertSame('Ceil Blue', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
+        $this->assertSame('Scrub Top', $data[10]['product']['name']);
+        $this->assertSame('Ceil Blue', $data[10][FeaturedColorField::FIELD_NAME][FeaturedColorField::FIELD_INPUT]);
     }
 
     /**
@@ -117,22 +117,22 @@ class FeaturedColorFieldTest extends TestCase
         $this->product = new FormProduct();
         $this->product->setData('type_id', Configurable::TYPE_CODE);
 
-        self::assertSame([], $this->modifier()->modifyData([]));
-        self::assertSame([], $this->lookups);
+        $this->assertSame([], $this->modifier()->modifyData([]));
+        $this->assertSame([], $this->lookups);
     }
 
     public function testASimpleProductIsLeftAloneWithoutQuerying(): void
     {
         $this->product->setData('type_id', 'simple');
 
-        self::assertSame([], $this->modifier()->modifyData([]));
-        self::assertSame([], $this->lookups);
+        $this->assertSame([], $this->modifier()->modifyData([]));
+        $this->assertSame([], $this->lookups);
     }
 
     public function testADisabledFeatureLeavesTheFormAloneWithoutQuerying(): void
     {
-        self::assertSame([], $this->modifier(enabled: false)->modifyData([]));
-        self::assertSame([], $this->lookups);
+        $this->assertSame([], $this->modifier(enabled: false)->modifyData([]));
+        $this->assertSame([], $this->lookups);
     }
 
     /**
@@ -143,7 +143,7 @@ class FeaturedColorFieldTest extends TestCase
     {
         $meta = ['product-details' => ['children' => []]];
 
-        self::assertSame($meta, $this->modifier()->modifyMeta($meta));
+        $this->assertSame($meta, $this->modifier()->modifyMeta($meta));
     }
 
     private function modifier(bool $enabled = true): FeaturedColorField

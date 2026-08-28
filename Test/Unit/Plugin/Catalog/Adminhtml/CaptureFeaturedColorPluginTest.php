@@ -29,14 +29,14 @@ class CaptureFeaturedColorPluginTest extends TestCase
 
         $this->plugin()->afterInitialize($this->subject(), $product);
 
-        self::assertSame('Ceil Blue', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
+        $this->assertSame('Ceil Blue', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
     }
 
     public function testTheProductIsReturnedForTheNextPlugin(): void
     {
         $product = $this->product();
 
-        self::assertSame($product, $this->plugin()->afterInitialize($this->subject(), $product));
+        $this->assertSame($product, $this->plugin()->afterInitialize($this->subject(), $product));
     }
 
     /**
@@ -50,7 +50,7 @@ class CaptureFeaturedColorPluginTest extends TestCase
 
         $this->plugin()->afterInitialize($this->subject(), $product);
 
-        self::assertSame('Ceil Blue', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
+        $this->assertSame('Ceil Blue', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
     }
 
     /**
@@ -64,8 +64,8 @@ class CaptureFeaturedColorPluginTest extends TestCase
 
         $this->plugin()->afterInitialize($this->subject(), $product);
 
-        self::assertTrue($product->hasData(CaptureFeaturedColorPlugin::DATA_KEY));
-        self::assertSame('', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
+        $this->assertTrue($product->hasData(CaptureFeaturedColorPlugin::DATA_KEY));
+        $this->assertSame('', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
     }
 
     /**
@@ -79,7 +79,7 @@ class CaptureFeaturedColorPluginTest extends TestCase
 
         $this->plugin()->afterInitialize($this->subject(), $product);
 
-        self::assertFalse($product->hasData(CaptureFeaturedColorPlugin::DATA_KEY));
+        $this->assertFalse($product->hasData(CaptureFeaturedColorPlugin::DATA_KEY));
     }
 
     /**
@@ -94,7 +94,7 @@ class CaptureFeaturedColorPluginTest extends TestCase
 
             $this->plugin()->afterInitialize($this->subject(), $product);
 
-            self::assertFalse($product->hasData(CaptureFeaturedColorPlugin::DATA_KEY));
+            $this->assertFalse($product->hasData(CaptureFeaturedColorPlugin::DATA_KEY));
         }
     }
 
@@ -109,7 +109,7 @@ class CaptureFeaturedColorPluginTest extends TestCase
 
         $this->plugin()->afterInitialize($this->subject(), $product);
 
-        self::assertSame('', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
+        $this->assertSame('', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
     }
 
     /**
@@ -117,7 +117,7 @@ class CaptureFeaturedColorPluginTest extends TestCase
      */
     public function testTheRequestKeyAndTheDataKeyAreDeliberatelyDifferent(): void
     {
-        self::assertNotSame(
+        $this->assertNotSame(
             CaptureFeaturedColorPlugin::REQUEST_KEY,
             CaptureFeaturedColorPlugin::DATA_KEY
         );

@@ -84,11 +84,11 @@ class FeaturedColorTest extends TestCase
         $resource = (new ReflectionClass(FeaturedColor::class))->newInstanceWithoutConstructor();
         (new ReflectionMethod($resource, '_construct'))->invoke($resource);
 
-        self::assertSame(
+        $this->assertSame(
             FeaturedColor::TABLE_NAME,
             (new ReflectionProperty(FeaturedColor::class, '_mainTable'))->getValue($resource)
         );
-        self::assertSame(FeaturedColorInterface::FEATURED_COLOR_ID, $resource->getIdFieldName());
+        $this->assertSame(FeaturedColorInterface::FEATURED_COLOR_ID, $resource->getIdFieldName());
     }
 
     /**
@@ -98,11 +98,11 @@ class FeaturedColorTest extends TestCase
     {
         $this->row = ['product_id' => 10, 'color_label' => 'Ceil Blue'];
 
-        self::assertSame(
+        $this->assertSame(
             ['product_id' => 10, 'color_label' => 'Ceil Blue'],
             $this->resource()->loadByProduct(10, 2)
         );
-        self::assertSame(
+        $this->assertSame(
             [['condition' => 'product_id = ?', 'value' => 10], ['condition' => 'store_id = ?', 'value' => 2]],
             $this->conditions
         );
@@ -116,7 +116,7 @@ class FeaturedColorTest extends TestCase
     {
         $this->row = false;
 
-        self::assertNull($this->resource()->loadByProduct(10, 0));
+        $this->assertNull($this->resource()->loadByProduct(10, 0));
     }
 
     public function testManyProductsAreLoadedInOneQueryKeyedByProduct(): void
@@ -128,15 +128,15 @@ class FeaturedColorTest extends TestCase
 
         $loaded = $this->resource()->loadByProducts([10, 11], 0);
 
-        self::assertSame([10, 11], array_keys($loaded));
-        self::assertSame('Navy', $loaded[11]['color_label']);
+        $this->assertSame([10, 11], array_keys($loaded));
+        $this->assertSame('Navy', $loaded[11]['color_label']);
     }
 
     public function testTheBatchLookupIsAlsoScopedToTheStore(): void
     {
         $this->resource()->loadByProducts([10, 11], 2);
 
-        self::assertSame(
+        $this->assertSame(
             [
                 ['condition' => 'product_id IN (?)', 'value' => [10, 11]],
                 ['condition' => 'store_id = ?', 'value' => 2],
@@ -149,7 +149,7 @@ class FeaturedColorTest extends TestCase
     {
         $this->resource()->loadByProducts([10, 10, '10', 11], 0);
 
-        self::assertSame([10, 11], $this->conditions[0]['value']);
+        $this->assertSame([10, 11], $this->conditions[0]['value']);
     }
 
     /**
@@ -158,8 +158,8 @@ class FeaturedColorTest extends TestCase
      */
     public function testAnEmptyProductSetIsAnsweredWithoutQuerying(): void
     {
-        self::assertSame([], $this->resource()->loadByProducts([], 0));
-        self::assertSame([], $this->conditions);
+        $this->assertSame([], $this->resource()->loadByProducts([], 0));
+        $this->assertSame([], $this->conditions);
     }
 
     /**
@@ -172,9 +172,9 @@ class FeaturedColorTest extends TestCase
             [FeaturedColorInterface::PRODUCT_ID => 11, FeaturedColorInterface::COLOR_LABEL => 'Navy'],
         ];
 
-        self::assertSame(2, $this->resource()->upsertMany($rows));
-        self::assertCount(1, $this->upserts);
-        self::assertSame($rows, $this->upserts[0]['rows']);
+        $this->assertSame(2, $this->resource()->upsertMany($rows));
+        $this->assertCount(1, $this->upserts);
+        $this->assertSame($rows, $this->upserts[0]['rows']);
     }
 
     /**
@@ -185,23 +185,23 @@ class FeaturedColorTest extends TestCase
     {
         $this->resource()->upsertMany([[FeaturedColorInterface::PRODUCT_ID => 10]]);
 
-        self::assertNotContains(FeaturedColorInterface::PRODUCT_ID, $this->upserts[0]['update']);
-        self::assertNotContains(FeaturedColorInterface::STORE_ID, $this->upserts[0]['update']);
-        self::assertContains(FeaturedColorInterface::COLOR_LABEL, $this->upserts[0]['update']);
-        self::assertContains(FeaturedColorInterface::IMAGE_PATH, $this->upserts[0]['update']);
+        $this->assertNotContains(FeaturedColorInterface::PRODUCT_ID, $this->upserts[0]['update']);
+        $this->assertNotContains(FeaturedColorInterface::STORE_ID, $this->upserts[0]['update']);
+        $this->assertContains(FeaturedColorInterface::COLOR_LABEL, $this->upserts[0]['update']);
+        $this->assertContains(FeaturedColorInterface::IMAGE_PATH, $this->upserts[0]['update']);
     }
 
     public function testAnEmptyUpsertIsANoOp(): void
     {
-        self::assertSame(0, $this->resource()->upsertMany([]));
-        self::assertSame([], $this->upserts);
+        $this->assertSame(0, $this->resource()->upsertMany([]));
+        $this->assertSame([], $this->upserts);
     }
 
     public function testRowsAreRemovedForTheGivenProductsInAStore(): void
     {
-        self::assertSame(2, $this->resource()->deleteByProducts([10, 11], 2));
-        self::assertStringContainsString('product_id IN (10,11)', $this->deletes[0]['where']);
-        self::assertStringContainsString('store_id = 2', $this->deletes[0]['where']);
+        $this->assertSame(2, $this->resource()->deleteByProducts([10, 11], 2));
+        $this->assertStringContainsString('product_id IN (10,11)', $this->deletes[0]['where']);
+        $this->assertStringContainsString('store_id = 2', $this->deletes[0]['where']);
     }
 
     /**
@@ -212,13 +212,13 @@ class FeaturedColorTest extends TestCase
     {
         $this->resource()->deleteByProducts([10], null);
 
-        self::assertStringNotContainsString('store_id', $this->deletes[0]['where']);
+        $this->assertStringNotContainsString('store_id', $this->deletes[0]['where']);
     }
 
     public function testAnEmptyDeleteIsANoOp(): void
     {
-        self::assertSame(0, $this->resource()->deleteByProducts([], 0));
-        self::assertSame([], $this->deletes);
+        $this->assertSame(0, $this->resource()->deleteByProducts([], 0));
+        $this->assertSame([], $this->deletes);
     }
 
     /**
@@ -228,7 +228,7 @@ class FeaturedColorTest extends TestCase
     {
         $this->resource()->deleteByProducts(['10', '11'], 0);
 
-        self::assertStringContainsString('product_id IN (10,11)', $this->deletes[0]['where']);
+        $this->assertStringContainsString('product_id IN (10,11)', $this->deletes[0]['where']);
     }
 
     private function resource(): FeaturedColor&MockObject

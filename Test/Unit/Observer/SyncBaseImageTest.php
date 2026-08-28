@@ -47,9 +47,9 @@ class SyncBaseImageTest extends TestCase
     {
         $this->observer()->execute($this->event([$this->row(10, '/c/e/ceil.jpg')]));
 
-        self::assertCount(1, $this->updates);
-        self::assertSame([10], $this->updates[0]['ids']);
-        self::assertSame(
+        $this->assertCount(1, $this->updates);
+        $this->assertSame([10], $this->updates[0]['ids']);
+        $this->assertSame(
             ['image' => '/c/e/ceil.jpg', 'small_image' => '/c/e/ceil.jpg', 'thumbnail' => '/c/e/ceil.jpg'],
             $this->updates[0]['attributes']
         );
@@ -63,8 +63,8 @@ class SyncBaseImageTest extends TestCase
         $this->observer()->execute($this->event([$this->row(10, '/c/e/ceil.jpg')]));
 
         foreach ($this->updates[0]['attributes'] as $value) {
-            self::assertStringStartsWith('/', $value);
-            self::assertStringNotContainsString('http', $value);
+            $this->assertStringStartsWith('/', $value);
+            $this->assertStringNotContainsString('http', $value);
         }
     }
 
@@ -80,9 +80,9 @@ class SyncBaseImageTest extends TestCase
             $this->row(12, '/n/a/navy.jpg'),
         ]));
 
-        self::assertCount(2, $this->updates);
-        self::assertSame([10, 11], $this->updates[0]['ids']);
-        self::assertSame([12], $this->updates[1]['ids']);
+        $this->assertCount(2, $this->updates);
+        $this->assertSame([10, 11], $this->updates[0]['ids']);
+        $this->assertSame([12], $this->updates[1]['ids']);
     }
 
     /**
@@ -96,7 +96,7 @@ class SyncBaseImageTest extends TestCase
             $this->row(11, '/c/e/ceil.jpg', 2),
         ]));
 
-        self::assertSame([1, 2], array_column($this->updates, 'storeId'));
+        $this->assertSame([1, 2], array_column($this->updates, 'storeId'));
     }
 
     /**
@@ -108,7 +108,7 @@ class SyncBaseImageTest extends TestCase
             'event' => new Event(['rows' => [$this->row(10, '/c/e/ceil.jpg')], 'sync_base_image' => false]),
         ]));
 
-        self::assertSame([], $this->updates);
+        $this->assertSame([], $this->updates);
     }
 
     public function testAnEmptyOrMalformedRowSetIsIgnored(): void
@@ -116,7 +116,7 @@ class SyncBaseImageTest extends TestCase
         $this->observer()->execute($this->event([]));
         $this->observer()->execute($this->event('not-an-array'));
 
-        self::assertSame([], $this->updates);
+        $this->assertSame([], $this->updates);
     }
 
     /**
@@ -131,8 +131,8 @@ class SyncBaseImageTest extends TestCase
             $this->row(12, '/n/a/navy.jpg'),
         ]));
 
-        self::assertCount(1, $this->updates);
-        self::assertSame([12], $this->updates[0]['ids']);
+        $this->assertCount(1, $this->updates);
+        $this->assertSame([12], $this->updates[0]['ids']);
     }
 
     public function testARowWithNoProductIdIsSkipped(): void
@@ -142,8 +142,8 @@ class SyncBaseImageTest extends TestCase
             $this->row(12, '/n/a/navy.jpg'),
         ]));
 
-        self::assertCount(1, $this->updates);
-        self::assertSame([12], $this->updates[0]['ids']);
+        $this->assertCount(1, $this->updates);
+        $this->assertSame([12], $this->updates[0]['ids']);
     }
 
     /**
@@ -172,9 +172,9 @@ class SyncBaseImageTest extends TestCase
             $this->row(11, '/n/a/navy.jpg'),
         ]));
 
-        self::assertCount(1, $this->updates);
-        self::assertCount(1, $this->logger->errors);
-        self::assertStringContainsString('base images', $this->logger->errors[0]);
+        $this->assertCount(1, $this->updates);
+        $this->assertCount(1, $this->logger->errors);
+        $this->assertStringContainsString('base images', $this->logger->errors[0]);
     }
 
     /**

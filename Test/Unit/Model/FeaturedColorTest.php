@@ -28,12 +28,12 @@ class FeaturedColorTest extends TestCase
     {
         $declared = (new ReflectionProperty(FeaturedColor::class, '_resourceName'))->getValue($this->entity());
 
-        self::assertSame(FeaturedColorResource::class, $declared);
+        $this->assertSame(FeaturedColorResource::class, $declared);
     }
 
     public function testTheEntityIsKeyedOnTheFeaturedColorId(): void
     {
-        self::assertSame(FeaturedColorInterface::FEATURED_COLOR_ID, $this->entity()->getIdFieldName());
+        $this->assertSame(FeaturedColorInterface::FEATURED_COLOR_ID, $this->entity()->getIdFieldName());
     }
 
     public function testEveryFieldRoundTripsThroughItsSetter(): void
@@ -48,14 +48,14 @@ class FeaturedColorTest extends TestCase
             ->setImagePath('/c/e/ceil.jpg')
             ->setUpdatedAt('2026-08-26 12:00:00');
 
-        self::assertSame(1, $entity->getFeaturedColorId());
-        self::assertSame(10, $entity->getProductId());
-        self::assertSame(2, $entity->getStoreId());
-        self::assertSame(11, $entity->getChildProductId());
-        self::assertSame(77, $entity->getColorOptionId());
-        self::assertSame('Ceil Blue', $entity->getColorLabel());
-        self::assertSame('/c/e/ceil.jpg', $entity->getImagePath());
-        self::assertSame('2026-08-26 12:00:00', $entity->getUpdatedAt());
+        $this->assertSame(1, $entity->getFeaturedColorId());
+        $this->assertSame(10, $entity->getProductId());
+        $this->assertSame(2, $entity->getStoreId());
+        $this->assertSame(11, $entity->getChildProductId());
+        $this->assertSame(77, $entity->getColorOptionId());
+        $this->assertSame('Ceil Blue', $entity->getColorLabel());
+        $this->assertSame('/c/e/ceil.jpg', $entity->getImagePath());
+        $this->assertSame('2026-08-26 12:00:00', $entity->getUpdatedAt());
     }
 
     /**
@@ -69,10 +69,10 @@ class FeaturedColorTest extends TestCase
         $entity->setData(FeaturedColorInterface::CHILD_PRODUCT_ID, '11');
         $entity->setData(FeaturedColorInterface::COLOR_OPTION_ID, '77');
 
-        self::assertSame(10, $entity->getProductId());
-        self::assertSame(2, $entity->getStoreId());
-        self::assertSame(11, $entity->getChildProductId());
-        self::assertSame(77, $entity->getColorOptionId());
+        $this->assertSame(10, $entity->getProductId());
+        $this->assertSame(2, $entity->getStoreId());
+        $this->assertSame(11, $entity->getChildProductId());
+        $this->assertSame(77, $entity->getColorOptionId());
     }
 
     /**
@@ -83,20 +83,20 @@ class FeaturedColorTest extends TestCase
     {
         $entity = $this->entity();
 
-        self::assertNull($entity->getFeaturedColorId());
-        self::assertNull($entity->getChildProductId());
-        self::assertNull($entity->getColorOptionId());
-        self::assertNull($entity->getColorLabel());
-        self::assertNull($entity->getImagePath());
-        self::assertNull($entity->getUpdatedAt());
+        $this->assertNull($entity->getFeaturedColorId());
+        $this->assertNull($entity->getChildProductId());
+        $this->assertNull($entity->getColorOptionId());
+        $this->assertNull($entity->getColorLabel());
+        $this->assertNull($entity->getImagePath());
+        $this->assertNull($entity->getUpdatedAt());
     }
 
     public function testTheSettersAreFluent(): void
     {
         $entity = $this->entity();
 
-        self::assertSame($entity, $entity->setProductId(1));
-        self::assertSame($entity, $entity->setColorLabel(null));
+        $this->assertSame($entity, $entity->setProductId(1));
+        $this->assertSame($entity, $entity->setColorLabel(null));
     }
 
     private function entity(): FeaturedColor

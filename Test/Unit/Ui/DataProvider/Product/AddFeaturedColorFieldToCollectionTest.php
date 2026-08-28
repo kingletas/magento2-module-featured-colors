@@ -49,8 +49,8 @@ class AddFeaturedColorFieldToCollectionTest extends TestCase
     {
         $this->addField();
 
-        self::assertCount(1, $this->joins);
-        self::assertSame(
+        $this->assertCount(1, $this->joins);
+        $this->assertSame(
             ['featured_color_label' => AddFeaturedColorFieldToCollection::TABLE_ALIAS . '.color_label'],
             $this->joins[0]['columns']
         );
@@ -64,7 +64,7 @@ class AddFeaturedColorFieldToCollectionTest extends TestCase
     {
         $this->addField();
 
-        self::assertSame(
+        $this->assertSame(
             [AddFeaturedColorFieldToCollection::TABLE_ALIAS => 'pfx_' . FeaturedColorResource::TABLE_NAME],
             $this->joins[0]['table']
         );
@@ -78,8 +78,8 @@ class AddFeaturedColorFieldToCollectionTest extends TestCase
     {
         $this->addField();
 
-        self::assertStringContainsString('.store_id = 0', $this->joins[0]['on']);
-        self::assertStringContainsString('.product_id = e.entity_id', $this->joins[0]['on']);
+        $this->assertStringContainsString('.store_id = 0', $this->joins[0]['on']);
+        $this->assertStringContainsString('.product_id = e.entity_id', $this->joins[0]['on']);
     }
 
     /**
@@ -94,7 +94,7 @@ class AddFeaturedColorFieldToCollectionTest extends TestCase
         $this->fromPart[AddFeaturedColorFieldToCollection::TABLE_ALIAS] = [];
         $this->field($collection);
 
-        self::assertCount(1, $this->joins);
+        $this->assertCount(1, $this->joins);
     }
 
     /**
@@ -108,7 +108,7 @@ class AddFeaturedColorFieldToCollectionTest extends TestCase
         (new AddFeaturedColorFieldToCollection($this->resourceConnection()))
             ->addField($collection, 'featured_color_label', null);
 
-        self::assertSame([], $this->joins);
+        $this->assertSame([], $this->joins);
     }
 
     private function addField(): void

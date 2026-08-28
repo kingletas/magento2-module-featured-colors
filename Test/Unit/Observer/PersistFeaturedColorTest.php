@@ -75,10 +75,10 @@ class PersistFeaturedColorTest extends TestCase
     {
         $this->observer()->execute($this->event($this->product('SKU-1', 'Ceil Blue', storeId: 2)));
 
-        self::assertCount(1, $this->applied);
-        self::assertSame('SKU-1', $this->applied[0]->sku);
-        self::assertSame('Ceil Blue', $this->applied[0]->colorLabel);
-        self::assertSame(2, $this->applied[0]->storeId);
+        $this->assertCount(1, $this->applied);
+        $this->assertSame('SKU-1', $this->applied[0]->sku);
+        $this->assertSame('Ceil Blue', $this->applied[0]->colorLabel);
+        $this->assertSame(2, $this->applied[0]->storeId);
     }
 
     /**
@@ -91,15 +91,15 @@ class PersistFeaturedColorTest extends TestCase
 
         $this->observer()->execute($this->event($product));
 
-        self::assertSame('Ceil Blue', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
-        self::assertCount(1, $this->applied);
+        $this->assertSame('Ceil Blue', $product->getData(CaptureFeaturedColorPlugin::DATA_KEY));
+        $this->assertCount(1, $this->applied);
     }
 
     public function testTheLabelIsTrimmedBeforeItIsApplied(): void
     {
         $this->observer()->execute($this->event($this->product('SKU-1', "  Ceil Blue \n")));
 
-        self::assertSame('Ceil Blue', $this->applied[0]->colorLabel);
+        $this->assertSame('Ceil Blue', $this->applied[0]->colorLabel);
     }
 
     /**
@@ -113,8 +113,8 @@ class PersistFeaturedColorTest extends TestCase
 
         $this->observer()->execute($this->event($product));
 
-        self::assertSame([], $this->applied);
-        self::assertSame([], $this->deletes);
+        $this->assertSame([], $this->applied);
+        $this->assertSame([], $this->deletes);
     }
 
     /**
@@ -125,8 +125,8 @@ class PersistFeaturedColorTest extends TestCase
     {
         $this->observer()->execute($this->event($this->product('SKU-1', '', productId: 10, storeId: 2)));
 
-        self::assertSame([['ids' => [10], 'storeId' => 2]], $this->deletes);
-        self::assertSame([], $this->applied);
+        $this->assertSame([['ids' => [10], 'storeId' => 2]], $this->deletes);
+        $this->assertSame([], $this->applied);
     }
 
     /**
@@ -136,14 +136,14 @@ class PersistFeaturedColorTest extends TestCase
     {
         $this->observer()->execute($this->event($this->product('SKU-1', 'Ceil Blue', typeId: 'simple')));
 
-        self::assertSame([], $this->applied);
+        $this->assertSame([], $this->applied);
     }
 
     public function testNothingHappensWhenTheFeatureIsDisabled(): void
     {
         $this->observer(enabled: false)->execute($this->event($this->product('SKU-1', 'Ceil Blue')));
 
-        self::assertSame([], $this->applied);
+        $this->assertSame([], $this->applied);
     }
 
     /**
@@ -154,7 +154,7 @@ class PersistFeaturedColorTest extends TestCase
         $this->observer()->execute(new Observer(['event' => new Event([])]));
         $this->observer()->execute(new Observer(['event' => new Event(['product' => 'SKU-1'])]));
 
-        self::assertSame([], $this->applied);
+        $this->assertSame([], $this->applied);
     }
 
     /**
@@ -167,8 +167,8 @@ class PersistFeaturedColorTest extends TestCase
 
         $this->observer()->execute($this->event($this->product('SKU-1', 'Ceil Blue')));
 
-        self::assertCount(1, $this->warnings);
-        self::assertStringContainsString('no enabled child', $this->warnings[0]);
+        $this->assertCount(1, $this->warnings);
+        $this->assertStringContainsString('no enabled child', $this->warnings[0]);
     }
 
     /**
@@ -181,9 +181,9 @@ class PersistFeaturedColorTest extends TestCase
 
         $this->observer()->execute($this->event($this->product('SKU-1', 'Ceil Blue')));
 
-        self::assertCount(1, $this->logger->errors);
-        self::assertCount(1, $this->warnings);
-        self::assertStringContainsString('was saved', $this->warnings[0]);
+        $this->assertCount(1, $this->logger->errors);
+        $this->assertCount(1, $this->warnings);
+        $this->assertStringContainsString('was saved', $this->warnings[0]);
     }
 
     /**
@@ -196,7 +196,7 @@ class PersistFeaturedColorTest extends TestCase
 
         $this->observer()->execute($this->event($this->product('SKU-1', 'Ceil Blue')));
 
-        self::assertStringNotContainsString('lock wait', $this->warnings[0]);
+        $this->assertStringNotContainsString('lock wait', $this->warnings[0]);
     }
 
     private function product(

@@ -31,19 +31,19 @@ class ConfigTest extends TestCase
             'acme_featuredcolors'
         );
 
-        self::assertTrue($config->isEnabled());
-        self::assertTrue($config->shouldSyncBaseImage());
-        self::assertSame('colour_family', $config->getColorAttributeCode());
+        $this->assertTrue($config->isEnabled());
+        $this->assertTrue($config->shouldSyncBaseImage());
+        $this->assertSame('colour_family', $config->getColorAttributeCode());
     }
 
     public function testAnUnconfiguredStoreHasTheFeatureOff(): void
     {
-        self::assertFalse($this->config([])->isEnabled());
+        $this->assertFalse($this->config([])->isEnabled());
     }
 
     public function testTheDisabledFlagIsReadAsAFlagRatherThanForTruthiness(): void
     {
-        self::assertFalse($this->config(['general/enabled' => '0'])->isEnabled());
+        $this->assertFalse($this->config(['general/enabled' => '0'])->isEnabled());
     }
 
     /**
@@ -52,9 +52,9 @@ class ConfigTest extends TestCase
      */
     public function testBaseImageSyncIsOffUnlessItIsSwitchedOn(): void
     {
-        self::assertFalse($this->config([])->shouldSyncBaseImage());
-        self::assertFalse($this->config(['general/sync_base_image' => '0'])->shouldSyncBaseImage());
-        self::assertTrue($this->config(['general/sync_base_image' => '1'])->shouldSyncBaseImage());
+        $this->assertFalse($this->config([])->shouldSyncBaseImage());
+        $this->assertFalse($this->config(['general/sync_base_image' => '0'])->shouldSyncBaseImage());
+        $this->assertTrue($this->config(['general/sync_base_image' => '1'])->shouldSyncBaseImage());
     }
 
     /**
@@ -63,7 +63,7 @@ class ConfigTest extends TestCase
      */
     public function testTheColourAttributeDefaultsToTheConventionalCode(): void
     {
-        self::assertSame('color', $this->config([])->getColorAttributeCode());
+        $this->assertSame('color', $this->config([])->getColorAttributeCode());
     }
 
     /**
@@ -72,14 +72,14 @@ class ConfigTest extends TestCase
      */
     public function testAnEmptyColourAttributeFallsBackToTheDefault(): void
     {
-        self::assertSame('color', $this->config(['general/color_attribute' => ''])->getColorAttributeCode());
+        $this->assertSame('color', $this->config(['general/color_attribute' => ''])->getColorAttributeCode());
     }
 
     public function testTheStoreScopeIsPassedThrough(): void
     {
         $config = $this->config(['general/color_attribute' => 'colour_family']);
 
-        self::assertSame('colour_family', $config->getColorAttributeCode(2));
+        $this->assertSame('colour_family', $config->getColorAttributeCode(2));
     }
 
     /**

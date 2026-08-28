@@ -69,8 +69,8 @@ class FeaturedColorImportTest extends TestCase
     {
         $import = $this->import();
 
-        self::assertSame(FeaturedColorImport::ENTITY_CODE, $import->getEntityTypeCode());
-        self::assertSame(
+        $this->assertSame(FeaturedColorImport::ENTITY_CODE, $import->getEntityTypeCode());
+        $this->assertSame(
             [
                 FeaturedColorImport::COLUMN_SKU,
                 FeaturedColorImport::COLUMN_COLOR,
@@ -82,8 +82,8 @@ class FeaturedColorImportTest extends TestCase
 
     public function testAWellFormedRowValidates(): void
     {
-        self::assertTrue($this->import()->validateRow($this->row('SKU-1', 'Ceil Blue'), 1));
-        self::assertSame([], $this->errors);
+        $this->assertTrue($this->import()->validateRow($this->row('SKU-1', 'Ceil Blue'), 1));
+        $this->assertSame([], $this->errors);
     }
 
     /**
@@ -97,20 +97,20 @@ class FeaturedColorImportTest extends TestCase
             $import->validateRow($this->row('SKU-' . $rowNum, 'Ceil Blue'), $rowNum);
         }
 
-        self::assertSame([], $this->conditions);
-        self::assertSame([], $this->applied);
+        $this->assertSame([], $this->conditions);
+        $this->assertSame([], $this->applied);
     }
 
     public function testARowWithNoSkuIsRejected(): void
     {
-        self::assertFalse($this->import()->validateRow($this->row('', 'Ceil Blue'), 1));
-        self::assertSame(['SkuIsRequired'], array_column($this->errors, 'code'));
+        $this->assertFalse($this->import()->validateRow($this->row('', 'Ceil Blue'), 1));
+        $this->assertSame(['SkuIsRequired'], array_column($this->errors, 'code'));
     }
 
     public function testARowWithNoColourIsRejected(): void
     {
-        self::assertFalse($this->import()->validateRow($this->row('SKU-1', '   '), 1));
-        self::assertSame(['ColorIsRequired'], array_column($this->errors, 'code'));
+        $this->assertFalse($this->import()->validateRow($this->row('SKU-1', '   '), 1));
+        $this->assertSame(['ColorIsRequired'], array_column($this->errors, 'code'));
     }
 
     /**
@@ -120,21 +120,21 @@ class FeaturedColorImportTest extends TestCase
     {
         $import = $this->import(Import::BEHAVIOR_DELETE);
 
-        self::assertTrue($import->validateRow($this->row('SKU-1', ''), 1));
-        self::assertSame([], $this->errors);
+        $this->assertTrue($import->validateRow($this->row('SKU-1', ''), 1));
+        $this->assertSame([], $this->errors);
     }
 
     public function testANonNumericStoreIdIsRejected(): void
     {
-        self::assertFalse($this->import()->validateRow($this->row('SKU-1', 'Ceil Blue', 'default'), 1));
-        self::assertSame(['StoreIdMustBeNumeric'], array_column($this->errors, 'code'));
+        $this->assertFalse($this->import()->validateRow($this->row('SKU-1', 'Ceil Blue', 'default'), 1));
+        $this->assertSame(['StoreIdMustBeNumeric'], array_column($this->errors, 'code'));
     }
 
     public function testAnAbsentStoreIdIsAccepted(): void
     {
         $import = $this->import();
 
-        self::assertTrue($import->validateRow(
+        $this->assertTrue($import->validateRow(
             [FeaturedColorImport::COLUMN_SKU => 'SKU-1', FeaturedColorImport::COLUMN_COLOR => 'Ceil Blue'],
             1
         ));
@@ -151,7 +151,7 @@ class FeaturedColorImportTest extends TestCase
         $import->validateRow($this->row('', 'Ceil Blue'), 1);
         $import->validateRow($this->row('', 'Ceil Blue'), 1);
 
-        self::assertCount(1, $this->errors);
+        $this->assertCount(1, $this->errors);
     }
 
     public function testEveryValidRowInABunchBecomesAnAssignment(): void
@@ -161,10 +161,10 @@ class FeaturedColorImportTest extends TestCase
             2 => $this->row('SKU-2', 'Navy', '2'),
         ]];
 
-        self::assertTrue($this->import()->importData());
-        self::assertCount(2, $this->applied);
-        self::assertSame('SKU-1', $this->applied[0]->sku);
-        self::assertSame(2, $this->applied[1]->storeId);
+        $this->assertTrue($this->import()->importData());
+        $this->assertCount(2, $this->applied);
+        $this->assertSame('SKU-1', $this->applied[0]->sku);
+        $this->assertSame(2, $this->applied[1]->storeId);
     }
 
     /**
@@ -178,8 +178,8 @@ class FeaturedColorImportTest extends TestCase
 
         $this->import()->importData();
 
-        self::assertSame([40], array_column($this->errors, 'row'));
-        self::assertStringContainsString('No such SKU.', (string) $this->errors[0]['message']);
+        $this->assertSame([40], array_column($this->errors, 'row'));
+        $this->assertStringContainsString('No such SKU.', (string) $this->errors[0]['message']);
     }
 
     public function testTheRowNumberFromTheFileIsCarriedIntoTheAssignment(): void
@@ -188,7 +188,7 @@ class FeaturedColorImportTest extends TestCase
 
         $this->import()->importData();
 
-        self::assertSame(47, $this->applied[0]->rowNumber);
+        $this->assertSame(47, $this->applied[0]->rowNumber);
     }
 
     public function testAnInvalidRowIsNotSentToTheApplier(): void
@@ -200,8 +200,8 @@ class FeaturedColorImportTest extends TestCase
 
         $this->import()->importData();
 
-        self::assertCount(1, $this->applied);
-        self::assertSame('SKU-1', $this->applied[0]->sku);
+        $this->assertCount(1, $this->applied);
+        $this->assertSame('SKU-1', $this->applied[0]->sku);
     }
 
     /**
@@ -218,17 +218,17 @@ class FeaturedColorImportTest extends TestCase
 
         $this->import()->importData();
 
-        self::assertSame(2, $this->bunchesTaken - 1);
-        self::assertCount(2, $this->errors);
-        self::assertSame(['AssignmentFailed', 'AssignmentFailed'], array_column($this->errors, 'code'));
+        $this->assertSame(2, $this->bunchesTaken - 1);
+        $this->assertCount(2, $this->errors);
+        $this->assertSame(['AssignmentFailed', 'AssignmentFailed'], array_column($this->errors, 'code'));
     }
 
     public function testABunchWithNothingValidIsSkippedWithoutCallingTheApplier(): void
     {
         $this->bunches = [[1 => $this->row('', '')]];
 
-        self::assertFalse($this->import()->importData());
-        self::assertSame([], $this->applied);
+        $this->assertFalse($this->import()->importData());
+        $this->assertSame([], $this->applied);
     }
 
     public function testTheImportReportsWhetherAnythingWasWritten(): void
@@ -236,15 +236,15 @@ class FeaturedColorImportTest extends TestCase
         $this->bunches = [[1 => $this->row('SKU-1', 'Ceil Blue')]];
         $this->result = new AssignmentResult(0);
 
-        self::assertFalse($this->import()->importData());
+        $this->assertFalse($this->import()->importData());
     }
 
     public function testDeleteRemovesTheRowsForTheListedProducts(): void
     {
         $this->bunches = [[1 => $this->row('SKU-1', ''), 2 => $this->row('SKU-2', '')]];
 
-        self::assertTrue($this->import(Import::BEHAVIOR_DELETE)->importData());
-        self::assertSame([['ids' => [10, 11], 'storeId' => 0]], $this->deletes);
+        $this->assertTrue($this->import(Import::BEHAVIOR_DELETE)->importData());
+        $this->assertSame([['ids' => [10, 11], 'storeId' => 0]], $this->deletes);
     }
 
     /**
@@ -260,7 +260,7 @@ class FeaturedColorImportTest extends TestCase
 
         $this->import(Import::BEHAVIOR_DELETE)->importData();
 
-        self::assertSame(['SKU-1', 'SKU-2'], $this->conditions[0]['value']);
+        $this->assertSame(['SKU-1', 'SKU-2'], $this->conditions[0]['value']);
     }
 
     public function testDeleteIsScopedPerStore(): void
@@ -272,7 +272,7 @@ class FeaturedColorImportTest extends TestCase
 
         $this->import(Import::BEHAVIOR_DELETE)->importData();
 
-        self::assertSame([0, 2], array_column($this->deletes, 'storeId'));
+        $this->assertSame([0, 2], array_column($this->deletes, 'storeId'));
     }
 
     /**
@@ -285,7 +285,7 @@ class FeaturedColorImportTest extends TestCase
 
         $this->import(Import::BEHAVIOR_DELETE)->importData();
 
-        self::assertContains(
+        $this->assertContains(
             ['condition' => 'type_id = ?', 'value' => Configurable::TYPE_CODE],
             $this->conditions
         );
@@ -296,8 +296,8 @@ class FeaturedColorImportTest extends TestCase
         $this->bunches = [[1 => $this->row('GONE', '')]];
         $this->catalogueIds = [];
 
-        self::assertFalse($this->import(Import::BEHAVIOR_DELETE)->importData());
-        self::assertSame([], $this->deletes);
+        $this->assertFalse($this->import(Import::BEHAVIOR_DELETE)->importData());
+        $this->assertSame([], $this->deletes);
     }
 
     /**

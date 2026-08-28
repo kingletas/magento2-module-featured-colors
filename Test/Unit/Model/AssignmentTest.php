@@ -20,10 +20,10 @@ class AssignmentTest extends TestCase
     {
         $assignment = new Assignment('SKU-1', 'Ceil Blue', 2, 47);
 
-        self::assertSame('SKU-1', $assignment->sku);
-        self::assertSame('Ceil Blue', $assignment->colorLabel);
-        self::assertSame(2, $assignment->storeId);
-        self::assertSame(47, $assignment->rowNumber);
+        $this->assertSame('SKU-1', $assignment->sku);
+        $this->assertSame('Ceil Blue', $assignment->colorLabel);
+        $this->assertSame(2, $assignment->storeId);
+        $this->assertSame(47, $assignment->rowNumber);
     }
 
     /**
@@ -32,7 +32,7 @@ class AssignmentTest extends TestCase
      */
     public function testTheScopeDefaultsToTheDefaultStore(): void
     {
-        self::assertSame(0, (new Assignment('SKU-1', 'Ceil Blue'))->storeId);
+        $this->assertSame(0, (new Assignment('SKU-1', 'Ceil Blue'))->storeId);
     }
 
     /**
@@ -40,7 +40,7 @@ class AssignmentTest extends TestCase
      */
     public function testAnAssignmentThatDidNotComeFromAFileHasNoRowNumber(): void
     {
-        self::assertNull((new Assignment('SKU-1', 'Ceil Blue'))->rowNumber);
+        $this->assertNull((new Assignment('SKU-1', 'Ceil Blue'))->rowNumber);
     }
 
     /**
@@ -51,14 +51,14 @@ class AssignmentTest extends TestCase
     {
         $batch = [new Assignment('SKU-1', 'Blue', 0, 12), new Assignment('SKU-2', 'Red', 0, 40)];
 
-        self::assertSame(12, $batch[0]->rowNumber);
-        self::assertSame(40, $batch[1]->rowNumber);
+        $this->assertSame(12, $batch[0]->rowNumber);
+        $this->assertSame(40, $batch[1]->rowNumber);
     }
 
     public function testItIsImmutable(): void
     {
         foreach (['sku', 'colorLabel', 'storeId', 'rowNumber'] as $property) {
-            self::assertTrue(
+            $this->assertTrue(
                 (new ReflectionProperty(Assignment::class, $property))->isReadOnly(),
                 sprintf('%s must be read-only.', $property)
             );

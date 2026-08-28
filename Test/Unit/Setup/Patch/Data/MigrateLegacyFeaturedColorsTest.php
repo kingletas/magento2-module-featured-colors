@@ -45,18 +45,18 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
     {
         $this->patch()->apply();
 
-        self::assertCount(1, $this->inserts);
+        $this->assertCount(1, $this->inserts);
         $row = $this->inserts[0]['rows'][0];
-        self::assertSame(10, $row[FeaturedColorInterface::PRODUCT_ID]);
-        self::assertSame(110, $row[FeaturedColorInterface::CHILD_PRODUCT_ID]);
-        self::assertSame('Ceil Blue', $row[FeaturedColorInterface::COLOR_LABEL]);
+        $this->assertSame(10, $row[FeaturedColorInterface::PRODUCT_ID]);
+        $this->assertSame(110, $row[FeaturedColorInterface::CHILD_PRODUCT_ID]);
+        $this->assertSame('Ceil Blue', $row[FeaturedColorInterface::COLOR_LABEL]);
     }
 
     public function testTheRowsGoIntoThisModulesOwnTable(): void
     {
         $this->patch()->apply();
 
-        self::assertSame('pfx_' . FeaturedColorResource::TABLE_NAME, $this->inserts[0]['table']);
+        $this->assertSame('pfx_' . FeaturedColorResource::TABLE_NAME, $this->inserts[0]['table']);
     }
 
     /**
@@ -67,7 +67,7 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
     {
         $this->patch()->apply();
 
-        self::assertNull($this->inserts[0]['rows'][0][FeaturedColorInterface::IMAGE_PATH]);
+        $this->assertNull($this->inserts[0]['rows'][0][FeaturedColorInterface::IMAGE_PATH]);
     }
 
     /**
@@ -78,7 +78,7 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
     {
         $this->patch()->apply();
 
-        self::assertNull($this->inserts[0]['rows'][0][FeaturedColorInterface::COLOR_OPTION_ID]);
+        $this->assertNull($this->inserts[0]['rows'][0][FeaturedColorInterface::COLOR_OPTION_ID]);
     }
 
     /**
@@ -91,8 +91,8 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
 
         $this->patch()->apply();
 
-        self::assertSame([], $this->inserts);
-        self::assertSame(0, $this->fetches);
+        $this->assertSame([], $this->inserts);
+        $this->assertSame(0, $this->fetches);
     }
 
     /**
@@ -103,8 +103,8 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
     {
         $this->patch(legacyTable: '')->apply();
 
-        self::assertSame(0, $this->fetches);
-        self::assertSame([], $this->inserts);
+        $this->assertSame(0, $this->fetches);
+        $this->assertSame([], $this->inserts);
     }
 
     /**
@@ -116,7 +116,7 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
 
         $this->patch(legacyColumn: 'payload')->apply();
 
-        self::assertSame('Navy', $this->inserts[0]['rows'][0][FeaturedColorInterface::COLOR_LABEL]);
+        $this->assertSame('Navy', $this->inserts[0]['rows'][0][FeaturedColorInterface::COLOR_LABEL]);
     }
 
     /**
@@ -131,8 +131,8 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
 
         $this->patch()->apply();
 
-        self::assertCount(1, $this->inserts[0]['rows']);
-        self::assertSame(11, $this->inserts[0]['rows'][0][FeaturedColorInterface::PRODUCT_ID]);
+        $this->assertCount(1, $this->inserts[0]['rows']);
+        $this->assertSame(11, $this->inserts[0]['rows'][0][FeaturedColorInterface::PRODUCT_ID]);
     }
 
     public function testAnEmptyBlobIsSkipped(): void
@@ -141,7 +141,7 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
 
         $this->patch()->apply();
 
-        self::assertSame([], $this->inserts);
+        $this->assertSame([], $this->inserts);
     }
 
     /**
@@ -154,7 +154,7 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
 
         $this->patch()->apply();
 
-        self::assertSame([], $this->inserts);
+        $this->assertSame([], $this->inserts);
     }
 
     /**
@@ -170,8 +170,8 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
 
         $this->patch()->apply();
 
-        self::assertSame(3, $this->fetches);
-        self::assertCount(2, $this->inserts);
+        $this->assertSame(3, $this->fetches);
+        $this->assertCount(2, $this->inserts);
     }
 
     /**
@@ -182,7 +182,7 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
     {
         $this->patch()->apply();
 
-        self::assertSame(
+        $this->assertSame(
             [FeaturedColorInterface::CHILD_PRODUCT_ID, FeaturedColorInterface::COLOR_LABEL],
             $this->inserts[0]['update']
         );
@@ -195,21 +195,21 @@ class MigrateLegacyFeaturedColorsTest extends TestCase
     {
         $this->patch()->apply();
 
-        self::assertCount(1, $this->logger->infos);
-        self::assertStringContainsString('1', $this->logger->infos[0]);
+        $this->assertCount(1, $this->logger->infos);
+        $this->assertStringContainsString('1', $this->logger->infos[0]);
     }
 
     public function testApplyReturnsThePatchForChaining(): void
     {
         $patch = $this->patch();
 
-        self::assertSame($patch, $patch->apply());
+        $this->assertSame($patch, $patch->apply());
     }
 
     public function testThePatchDeclaresNoDependenciesOrAliasesOfItsOwn(): void
     {
-        self::assertSame([], MigrateLegacyFeaturedColors::getDependencies());
-        self::assertSame([], $this->patch()->getAliases());
+        $this->assertSame([], MigrateLegacyFeaturedColors::getDependencies());
+        $this->assertSame([], $this->patch()->getAliases());
     }
 
     /**

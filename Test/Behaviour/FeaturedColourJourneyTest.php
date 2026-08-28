@@ -34,7 +34,7 @@ use PHPUnit\Framework\TestCase;
  * A merchandiser sets the colour a configurable leads with, and the listing
  * changes.
  */
-final class FeaturedColourJourneyTest extends TestCase
+class FeaturedColourJourneyTest extends TestCase
 {
     private const SECTION = 'commerce_featuredcolors';
     private const NOW = '2026-08-27 09:00:00';
@@ -94,9 +94,9 @@ final class FeaturedColourJourneyTest extends TestCase
     {
         $result = $this->assign(new Assignment('SCRUB-TOP', 'Ceil Blue', 1));
 
-        self::assertSame(1, $result->applied);
-        self::assertSame(110, $this->written[0][FeaturedColorInterface::CHILD_PRODUCT_ID]);
-        self::assertSame(
+        $this->assertSame(1, $result->applied);
+        $this->assertSame(110, $this->written[0][FeaturedColorInterface::CHILD_PRODUCT_ID]);
+        $this->assertSame(
             [['ids' => [10], 'attributes' => $this->imageAttributes('/c/e/ceil.jpg'), 'store' => 1]],
             $this->imageUpdates
         );
@@ -112,13 +112,13 @@ final class FeaturedColourJourneyTest extends TestCase
 
         try {
             $this->assign(new Assignment('SCRUB-TOP', 'Ceil Blue', 1));
-            self::fail('The write failure should have propagated.');
+            $this->fail('The write failure should have propagated.');
         } catch (\RuntimeException) {
             // The applier logs and rethrows; the caller decides.
         }
 
-        self::assertSame(['begin', 'rollback'], $this->transactions);
-        self::assertSame([], $this->imageUpdates, 'Nothing was committed, so nothing should have been repointed.');
+        $this->assertSame(['begin', 'rollback'], $this->transactions);
+        $this->assertSame([], $this->imageUpdates, 'Nothing was committed, so nothing should have been repointed.');
     }
 
     /**
@@ -131,8 +131,8 @@ final class FeaturedColourJourneyTest extends TestCase
 
         $result = $this->assign(new Assignment('SCRUB-TOP', 'Ceil Blue', 1));
 
-        self::assertSame(1, $result->applied, 'The row is still written.');
-        self::assertSame([], $this->imageUpdates, 'And the images are left alone.');
+        $this->assertSame(1, $result->applied, 'The row is still written.');
+        $this->assertSame([], $this->imageUpdates, 'And the images are left alone.');
     }
 
     /**
@@ -146,7 +146,7 @@ final class FeaturedColourJourneyTest extends TestCase
             new Assignment('SCRUB-TROUSER', 'Ceil Blue', 1)
         );
 
-        self::assertCount(2, $this->imageUpdates, 'Two distinct image paths, two statements.');
+        $this->assertCount(2, $this->imageUpdates, 'Two distinct image paths, two statements.');
     }
 
     /**
@@ -164,10 +164,10 @@ final class FeaturedColourJourneyTest extends TestCase
 
         $result = $this->assign(new Assignment('SCRUB-TOP', 'Ceil Blue', 1));
 
-        self::assertSame(0, $result->applied);
-        self::assertSame(1, $result->skipped);
-        self::assertSame([], $this->imageUpdates);
-        self::assertSame([], $this->transactions, 'A no-op batch should not open a transaction at all.');
+        $this->assertSame(0, $result->applied);
+        $this->assertSame(1, $result->skipped);
+        $this->assertSame([], $this->imageUpdates);
+        $this->assertSame([], $this->transactions, 'A no-op batch should not open a transaction at all.');
     }
 
     /**
@@ -181,10 +181,10 @@ final class FeaturedColourJourneyTest extends TestCase
             new Assignment('SCRUB-TROUSER', 'Navy', 1, 4)
         );
 
-        self::assertSame(1, $result->applied);
-        self::assertTrue($result->hasErrors());
-        self::assertArrayHasKey(4, $result->errors);
-        self::assertStringContainsString('SCRUB-TROUSER', (string) $result->errors[4]);
+        $this->assertSame(1, $result->applied);
+        $this->assertTrue($result->hasErrors());
+        $this->assertArrayHasKey(4, $result->errors);
+        $this->assertStringContainsString('SCRUB-TROUSER', (string) $result->errors[4]);
     }
 
     public function testASkuThatDoesNotExistIsAnErrorAgainstItsRowAlone(): void
@@ -194,8 +194,8 @@ final class FeaturedColourJourneyTest extends TestCase
             new Assignment('NOT-A-SKU', 'Ceil Blue', 1, 2)
         );
 
-        self::assertSame(1, $result->applied);
-        self::assertArrayHasKey(2, $result->errors);
+        $this->assertSame(1, $result->applied);
+        $this->assertArrayHasKey(2, $result->errors);
     }
 
     /**
@@ -209,7 +209,7 @@ final class FeaturedColourJourneyTest extends TestCase
             new Assignment('SCRUB-TOP', 'Navy', 2)
         );
 
-        self::assertSame(2, $result->applied);
+        $this->assertSame(2, $result->applied);
 
         $byStore = [];
 
@@ -217,7 +217,7 @@ final class FeaturedColourJourneyTest extends TestCase
             $byStore[$row[FeaturedColorInterface::STORE_ID]] = $row[FeaturedColorInterface::COLOR_OPTION_ID];
         }
 
-        self::assertSame([1 => self::CEIL_BLUE, 2 => self::NAVY], $byStore);
+        $this->assertSame([1 => self::CEIL_BLUE, 2 => self::NAVY], $byStore);
     }
 
     /**

@@ -19,9 +19,9 @@ class AssignmentResultTest extends TestCase
     {
         $result = new AssignmentResult(3, 2, [], [10, 11, 12]);
 
-        self::assertSame(3, $result->applied);
-        self::assertSame(2, $result->skipped);
-        self::assertSame([10, 11, 12], $result->touched);
+        $this->assertSame(3, $result->applied);
+        $this->assertSame(2, $result->skipped);
+        $this->assertSame([10, 11, 12], $result->touched);
     }
 
     /**
@@ -32,11 +32,11 @@ class AssignmentResultTest extends TestCase
     {
         $result = new AssignmentResult();
 
-        self::assertSame(0, $result->applied);
-        self::assertSame(0, $result->skipped);
-        self::assertSame([], $result->errors);
-        self::assertSame([], $result->touched);
-        self::assertFalse($result->hasErrors());
+        $this->assertSame(0, $result->applied);
+        $this->assertSame(0, $result->skipped);
+        $this->assertSame([], $result->errors);
+        $this->assertSame([], $result->touched);
+        $this->assertFalse($result->hasErrors());
     }
 
     /**
@@ -47,8 +47,8 @@ class AssignmentResultTest extends TestCase
     {
         $result = new AssignmentResult(0, 0, [12 => __('No such SKU.'), 40 => __('No such colour.')]);
 
-        self::assertTrue($result->hasErrors());
-        self::assertSame([12, 40], array_keys($result->errors));
+        $this->assertTrue($result->hasErrors());
+        $this->assertSame([12, 40], array_keys($result->errors));
     }
 
     /**
@@ -59,7 +59,7 @@ class AssignmentResultTest extends TestCase
     {
         $result = new AssignmentResult(3, 0, [12 => __('No such SKU.')], [10]);
 
-        self::assertSame(3, $result->applied);
-        self::assertTrue($result->hasErrors());
+        $this->assertSame(3, $result->applied);
+        $this->assertTrue($result->hasErrors());
     }
 }

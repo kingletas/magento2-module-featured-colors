@@ -88,16 +88,16 @@ class FeaturedColorApplierTest extends TestCase
     {
         $result = $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')]);
 
-        self::assertSame(1, $result->applied);
-        self::assertFalse($result->hasErrors());
+        $this->assertSame(1, $result->applied);
+        $this->assertFalse($result->hasErrors());
 
         $row = $this->upserts[0][0];
-        self::assertSame(10, $row[FeaturedColorInterface::PRODUCT_ID]);
-        self::assertSame(110, $row[FeaturedColorInterface::CHILD_PRODUCT_ID]);
-        self::assertSame(77, $row[FeaturedColorInterface::COLOR_OPTION_ID]);
-        self::assertSame('/c/e/ceil.jpg', $row[FeaturedColorInterface::IMAGE_PATH]);
-        self::assertSame(self::NOW, $row[FeaturedColorInterface::UPDATED_AT]);
-        self::assertSame([10], $result->touched);
+        $this->assertSame(10, $row[FeaturedColorInterface::PRODUCT_ID]);
+        $this->assertSame(110, $row[FeaturedColorInterface::CHILD_PRODUCT_ID]);
+        $this->assertSame(77, $row[FeaturedColorInterface::COLOR_OPTION_ID]);
+        $this->assertSame('/c/e/ceil.jpg', $row[FeaturedColorInterface::IMAGE_PATH]);
+        $this->assertSame(self::NOW, $row[FeaturedColorInterface::UPDATED_AT]);
+        $this->assertSame([10], $result->touched);
     }
 
     /**
@@ -108,7 +108,7 @@ class FeaturedColorApplierTest extends TestCase
     {
         $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')]);
 
-        self::assertContains(
+        $this->assertContains(
             ['condition' => 'type_id = ?', 'value' => Configurable::TYPE_CODE],
             $this->conditions
         );
@@ -121,32 +121,32 @@ class FeaturedColorApplierTest extends TestCase
     {
         $result = $this->applier()->apply([new Assignment('sku-1', 'Ceil Blue')]);
 
-        self::assertSame(1, $result->applied);
+        $this->assertSame(1, $result->applied);
     }
 
     public function testASkuWithNoConfigurableIsReportedAgainstItsRow(): void
     {
         $result = $this->applier()->apply([new Assignment('GONE', 'Ceil Blue', 0, 42)]);
 
-        self::assertSame(0, $result->applied);
-        self::assertArrayHasKey(42, $result->errors);
-        self::assertStringContainsString('GONE', (string) $result->errors[42]);
+        $this->assertSame(0, $result->applied);
+        $this->assertArrayHasKey(42, $result->errors);
+        $this->assertStringContainsString('GONE', (string) $result->errors[42]);
     }
 
     public function testAColourThatIsNotAnAttributeOptionIsReportedAgainstItsRow(): void
     {
         $result = $this->applier()->apply([new Assignment('SKU-1', 'Chartreuse', 0, 42)]);
 
-        self::assertArrayHasKey(42, $result->errors);
-        self::assertStringContainsString('Chartreuse', (string) $result->errors[42]);
+        $this->assertArrayHasKey(42, $result->errors);
+        $this->assertStringContainsString('Chartreuse', (string) $result->errors[42]);
     }
 
     public function testAConfigurableWithNoChildInThatColourIsReportedAgainstItsRow(): void
     {
         $result = $this->applier()->apply([new Assignment('SKU-1', 'Navy', 0, 42)]);
 
-        self::assertArrayHasKey(42, $result->errors);
-        self::assertStringContainsString('Navy', (string) $result->errors[42]);
+        $this->assertArrayHasKey(42, $result->errors);
+        $this->assertStringContainsString('Navy', (string) $result->errors[42]);
     }
 
     /**
@@ -160,7 +160,7 @@ class FeaturedColorApplierTest extends TestCase
             new Assignment('GONE', 'Ceil Blue', 0, 40),
         ]);
 
-        self::assertSame([40], array_keys($result->errors));
+        $this->assertSame([40], array_keys($result->errors));
     }
 
     /**
@@ -178,9 +178,9 @@ class FeaturedColorApplierTest extends TestCase
 
         $result = $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')]);
 
-        self::assertSame(0, $result->applied);
-        self::assertSame(1, $result->skipped);
-        self::assertSame([], $this->upserts);
+        $this->assertSame(0, $result->applied);
+        $this->assertSame(1, $result->skipped);
+        $this->assertSame([], $this->upserts);
     }
 
     /**
@@ -196,7 +196,7 @@ class FeaturedColorApplierTest extends TestCase
             ],
         ];
 
-        self::assertSame(1, $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')])->applied);
+        $this->assertSame(1, $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')])->applied);
     }
 
     /**
@@ -209,10 +209,10 @@ class FeaturedColorApplierTest extends TestCase
             new Assignment('SKU-1', 'Ceil Blue', 2),
         ]);
 
-        self::assertSame(2, $result->applied);
-        self::assertCount(2, $this->upserts);
-        self::assertSame(0, $this->upserts[0][0][FeaturedColorInterface::STORE_ID]);
-        self::assertSame(2, $this->upserts[1][0][FeaturedColorInterface::STORE_ID]);
+        $this->assertSame(2, $result->applied);
+        $this->assertCount(2, $this->upserts);
+        $this->assertSame(0, $this->upserts[0][0][FeaturedColorInterface::STORE_ID]);
+        $this->assertSame(2, $this->upserts[1][0][FeaturedColorInterface::STORE_ID]);
     }
 
     /**
@@ -226,7 +226,7 @@ class FeaturedColorApplierTest extends TestCase
             new Assignment('GONE', 'Ceil Blue', 2, 40),
         ]);
 
-        self::assertSame([40], array_keys($result->errors));
+        $this->assertSame([40], array_keys($result->errors));
     }
 
     /**
@@ -237,7 +237,7 @@ class FeaturedColorApplierTest extends TestCase
     {
         $this->applier()->apply([new Assignment('SKU-1', 'ceil blue')]);
 
-        self::assertSame('Ceil Blue', $this->upserts[0][0][FeaturedColorInterface::COLOR_LABEL]);
+        $this->assertSame('Ceil Blue', $this->upserts[0][0][FeaturedColorInterface::COLOR_LABEL]);
     }
 
     /**
@@ -247,9 +247,9 @@ class FeaturedColorApplierTest extends TestCase
     {
         $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')]);
 
-        self::assertSame(['begin', 'commit'], $this->transactions);
-        self::assertCount(1, $this->events);
-        self::assertSame('commerce_featured_colors_applied', $this->events[0]['name']);
+        $this->assertSame(['begin', 'commit'], $this->transactions);
+        $this->assertCount(1, $this->events);
+        $this->assertSame('commerce_featured_colors_applied', $this->events[0]['name']);
     }
 
     public function testTheEventCarriesTheRowsAndTheBaseImagePreference(): void
@@ -258,8 +258,8 @@ class FeaturedColorApplierTest extends TestCase
 
         $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')]);
 
-        self::assertTrue($this->events[0]['data']['sync_base_image']);
-        self::assertCount(1, $this->events[0]['data']['rows']);
+        $this->assertTrue($this->events[0]['data']['sync_base_image']);
+        $this->assertCount(1, $this->events[0]['data']['rows']);
     }
 
     /**
@@ -274,14 +274,14 @@ class FeaturedColorApplierTest extends TestCase
 
         try {
             $this->applier()->apply([new Assignment('SKU-1', 'Ceil Blue')]);
-            self::fail('Expected the write failure to propagate.');
+            $this->fail('Expected the write failure to propagate.');
         } catch (RuntimeException) {
             // Expected: the import decides what to do about a failed bunch.
         }
 
-        self::assertSame(['begin', 'rollback'], $this->transactions);
-        self::assertSame([], $this->events);
-        self::assertCount(1, $this->logger->errors);
+        $this->assertSame(['begin', 'rollback'], $this->transactions);
+        $this->assertSame([], $this->events);
+        $this->assertCount(1, $this->logger->errors);
     }
 
     /**
@@ -299,18 +299,18 @@ class FeaturedColorApplierTest extends TestCase
             new Assignment('SKU-2', 'Ceil Blue', 0, 13),
         ]);
 
-        self::assertCount(1, $result->errors);
-        self::assertCount(1, $this->logger->errors);
-        self::assertSame([], $this->upserts);
+        $this->assertCount(1, $result->errors);
+        $this->assertCount(1, $this->logger->errors);
+        $this->assertSame([], $this->upserts);
     }
 
     public function testAnEmptyBatchDoesNothing(): void
     {
         $result = $this->applier()->apply([]);
 
-        self::assertSame(0, $result->applied);
-        self::assertSame([], $this->upserts);
-        self::assertSame([], $this->transactions);
+        $this->assertSame(0, $result->applied);
+        $this->assertSame([], $this->upserts);
+        $this->assertSame([], $this->transactions);
     }
 
     /**
@@ -321,8 +321,8 @@ class FeaturedColorApplierTest extends TestCase
     {
         $this->applier()->apply([new Assignment('GONE', 'Ceil Blue', 0, 12)]);
 
-        self::assertSame([], $this->transactions);
-        self::assertSame([], $this->events);
+        $this->assertSame([], $this->transactions);
+        $this->assertSame([], $this->events);
     }
 
     /**
@@ -338,9 +338,9 @@ class FeaturedColorApplierTest extends TestCase
             new Assignment('SKU-1', 'Navy'),
         ]);
 
-        self::assertCount(1, $this->upserts[0]);
-        self::assertSame(111, $this->upserts[0][0][FeaturedColorInterface::CHILD_PRODUCT_ID]);
-        self::assertSame(1, $result->applied);
+        $this->assertCount(1, $this->upserts[0]);
+        $this->assertSame(111, $this->upserts[0][0][FeaturedColorInterface::CHILD_PRODUCT_ID]);
+        $this->assertSame(1, $result->applied);
     }
 
     private function applier(): FeaturedColorApplier

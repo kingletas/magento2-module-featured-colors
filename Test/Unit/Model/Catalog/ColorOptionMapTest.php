@@ -46,7 +46,7 @@ class ColorOptionMapTest extends TestCase
 
     public function testResolvesALabelToItsOptionId(): void
     {
-        self::assertSame(12, $this->map->findOptionIdByLabel('Ceil Blue'));
+        $this->assertSame(12, $this->map->findOptionIdByLabel('Ceil Blue'));
     }
 
     /**
@@ -55,25 +55,25 @@ class ColorOptionMapTest extends TestCase
      */
     public function testMatchingIsCaseAndWhitespaceInsensitive(): void
     {
-        self::assertSame(12, $this->map->findOptionIdByLabel('  ceil blue '));
-        self::assertSame(13, $this->map->findOptionIdByLabel('WINE'));
+        $this->assertSame(12, $this->map->findOptionIdByLabel('  ceil blue '));
+        $this->assertSame(13, $this->map->findOptionIdByLabel('WINE'));
     }
 
     public function testAnUnknownLabelResolvesToNullRatherThanRaising(): void
     {
-        self::assertNull($this->map->findOptionIdByLabel('Chartreuse'));
+        $this->assertNull($this->map->findOptionIdByLabel('Chartreuse'));
     }
 
     public function testBlankLabelsAndValuesAreIgnored(): void
     {
-        self::assertNull($this->map->findOptionIdByLabel(''));
-        self::assertNull($this->map->findOptionIdByLabel('Nothing'));
+        $this->assertNull($this->map->findOptionIdByLabel(''));
+        $this->assertNull($this->map->findOptionIdByLabel('Nothing'));
     }
 
     public function testReverseLookupReturnsTheLabelAsAuthored(): void
     {
-        self::assertSame('Ceil Blue', $this->map->findLabelByOptionId(12));
-        self::assertNull($this->map->findLabelByOptionId(999));
+        $this->assertSame('Ceil Blue', $this->map->findLabelByOptionId(12));
+        $this->assertNull($this->map->findLabelByOptionId(999));
     }
 
     /**
@@ -81,7 +81,7 @@ class ColorOptionMapTest extends TestCase
      */
     public function testOptionsAreLoadedOnceHoweverManyLookupsHappen(): void
     {
-        $this->source->expects(self::once())->method('getAllOptions');
+        $this->source->expects($this->once())->method('getAllOptions');
 
         $this->map->findOptionIdByLabel('Wine');
         $this->map->findOptionIdByLabel('Ceil Blue');
@@ -91,7 +91,7 @@ class ColorOptionMapTest extends TestCase
 
     public function testExposesTheAttributeIdAndCode(): void
     {
-        self::assertSame(93, $this->map->getAttributeId());
-        self::assertSame('color', $this->map->getAttributeCode());
+        $this->assertSame(93, $this->map->getAttributeId());
+        $this->assertSame('color', $this->map->getAttributeCode());
     }
 }

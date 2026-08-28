@@ -21,7 +21,7 @@ class FeaturedColorLabelTest extends TestCase
     {
         $item = $this->firstItem([['entity_id' => 10, 'featured_color_label' => 'Ceil Blue']]);
 
-        self::assertSame('Ceil Blue', $item['featured_color']);
+        $this->assertSame('Ceil Blue', $item['featured_color']);
     }
 
     /**
@@ -31,7 +31,7 @@ class FeaturedColorLabelTest extends TestCase
     {
         $item = $this->firstItem([['entity_id' => 10, 'featured_color_label' => 'Ceil Blue']]);
 
-        self::assertSame('Ceil Blue', $item['featured_color_label']);
+        $this->assertSame('Ceil Blue', $item['featured_color_label']);
     }
 
     /**
@@ -40,8 +40,8 @@ class FeaturedColorLabelTest extends TestCase
      */
     public function testAProductWithNoFeaturedColourShowsADash(): void
     {
-        self::assertSame('—', $this->firstItem([['entity_id' => 10]])['featured_color']);
-        self::assertSame(
+        $this->assertSame('—', $this->firstItem([['entity_id' => 10]])['featured_color']);
+        $this->assertSame(
             '—',
             $this->firstItem([['entity_id' => 10, 'featured_color_label' => '']])['featured_color']
         );
@@ -55,7 +55,7 @@ class FeaturedColorLabelTest extends TestCase
     {
         $item = $this->firstItem([['entity_id' => 10, 'featured_color_label' => null]]);
 
-        self::assertSame('—', $item['featured_color']);
+        $this->assertSame('—', $item['featured_color']);
     }
 
     public function testEveryRowIsRendered(): void
@@ -65,15 +65,15 @@ class FeaturedColorLabelTest extends TestCase
             ['entity_id' => 11, 'featured_color_label' => 'Navy'],
         ])['data']['items'];
 
-        self::assertSame(['Ceil Blue', 'Navy'], array_column($items, 'featured_color'));
+        $this->assertSame(['Ceil Blue', 'Navy'], array_column($items, 'featured_color'));
     }
 
     public function testADataSourceWithoutItemsIsReturnedUnchanged(): void
     {
         $column = $this->column();
 
-        self::assertSame([], $column->prepareDataSource([]));
-        self::assertSame(
+        $this->assertSame([], $column->prepareDataSource([]));
+        $this->assertSame(
             ['data' => ['items' => 'not-an-array']],
             $column->prepareDataSource(['data' => ['items' => 'not-an-array']])
         );

@@ -28,8 +28,8 @@ class CollectionTest extends TestCase
     {
         $collection = $this->collection();
 
-        self::assertSame(FeaturedColor::class, $collection->getModelName());
-        self::assertSame(FeaturedColorResource::class, $collection->getResourceModelName());
+        $this->assertSame(FeaturedColor::class, $collection->getModelName());
+        $this->assertSame(FeaturedColorResource::class, $collection->getResourceModelName());
     }
 
     /**
@@ -37,7 +37,7 @@ class CollectionTest extends TestCase
      */
     public function testTheIdFieldIsSetThroughTheSetter(): void
     {
-        self::assertSame(FeaturedColorInterface::FEATURED_COLOR_ID, $this->collection()->getIdFieldName());
+        $this->assertSame(FeaturedColorInterface::FEATURED_COLOR_ID, $this->collection()->getIdFieldName());
     }
 
     /**
@@ -46,7 +46,7 @@ class CollectionTest extends TestCase
      */
     public function testTheIdFieldIsNotTheFrameworkDefault(): void
     {
-        self::assertNotSame('id', $this->collection()->getIdFieldName());
+        $this->assertNotSame('id', $this->collection()->getIdFieldName());
     }
 
     private function collection(): Collection
