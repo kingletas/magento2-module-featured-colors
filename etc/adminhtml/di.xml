@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Reading the HTTP request is a controller-layer concern, so it lives in a plugin. -->
+    <type name="Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper">
+        <plugin name="commerce_featured_colors_capture"
+                type="Commerce\FeaturedColors\Plugin\Catalog\Adminhtml\CaptureFeaturedColorPlugin"/>
+    </type>
+
+    <virtualType name="Magento\Catalog\Ui\DataProvider\Product\Form\Modifier\Pool"
+                 type="Magento\Ui\DataProvider\Modifier\Pool">
+        <arguments>
+            <argument name="modifiers" xsi:type="array">
+                <item name="commerce_featured_color" xsi:type="array">
+                    <item name="class" xsi:type="string">Commerce\FeaturedColors\Ui\DataProvider\Product\Form\Modifier\FeaturedColorField</item>
+                    <item name="sortOrder" xsi:type="number">100</item>
+                </item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Keyed by the field name the grid column requests. -->
+    <type name="Magento\Catalog\Ui\DataProvider\Product\ProductDataProvider">
+        <arguments>
+            <argument name="addFieldStrategies" xsi:type="array">
+                <item name="featured_color_label" xsi:type="object">Commerce\FeaturedColors\Ui\DataProvider\Product\AddFeaturedColorFieldToCollection</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>

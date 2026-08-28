@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!-- The module owns its data. -->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="commerce_featured_color" resource="default" engine="innodb"
+           comment="Featured colour variant per configurable product, per store">
+        <column xsi:type="int" name="featured_color_id" padding="10" unsigned="true"
+                nullable="false" identity="true" comment="Featured Colour ID"/>
+        <column xsi:type="int" name="product_id" padding="10" unsigned="true"
+                nullable="false" comment="Configurable Product ID"/>
+        <column xsi:type="smallint" name="store_id" padding="5" unsigned="true"
+                nullable="false" default="0" comment="Store ID; 0 is default scope"/>
+        <column xsi:type="int" name="child_product_id" padding="10" unsigned="true"
+                nullable="true" comment="Simple Product ID chosen as the face of the configurable"/>
+        <column xsi:type="int" name="color_option_id" padding="10" unsigned="true"
+                nullable="true" comment="Colour attribute option ID"/>
+        <column xsi:type="varchar" name="color_label" nullable="true" length="255"
+                comment="Colour label as authored, denormalised for the grid"/>
+        <column xsi:type="varchar" name="image_path" nullable="true" length="255"
+                comment="Media-gallery relative path of the child base image"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Updated At"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="featured_color_id"/>
+        </constraint>
+
+        <!-- One featured colour per product per store. -->
+        <constraint xsi:type="unique" referenceId="COMMERCE_FEATURED_COLOR_PRODUCT_ID_STORE_ID">
+            <column name="product_id"/>
+            <column name="store_id"/>
+        </constraint>
+
+        <!-- Deleting the configurable removes its assignment. -->
+        <constraint xsi:type="foreign" referenceId="COMMERCE_FEATURED_COLOR_PRODUCT_ID_CPE_ENTITY_ID"
+                    table="commerce_featured_color" column="product_id"
+                    referenceTable="catalog_product_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
+        <!--
+            Deleting the chosen child nulls the reference, so the merchant's
+            choice survives to be re-resolved.
+        -->
+        <constraint xsi:type="foreign" referenceId="COMMERCE_FEATURED_COLOR_CHILD_ID_CPE_ENTITY_ID"
+                    table="commerce_featured_color" column="child_product_id"
+                    referenceTable="catalog_product_entity" referenceColumn="entity_id" onDelete="SET NULL"/>
+        <constraint xsi:type="foreign" referenceId="COMMERCE_FEATURED_COLOR_STORE_ID_STORE_STORE_ID"
+                    table="commerce_featured_color" column="store_id"
+                    referenceTable="store" referenceColumn="store_id" onDelete="CASCADE"/>
+
+        <index referenceId="COMMERCE_FEATURED_COLOR_COLOR_OPTION_ID" indexType="btree">
+            <column name="color_option_id"/>
+        </index>
+    </table>
+</schema>

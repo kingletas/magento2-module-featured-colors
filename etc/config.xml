@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <commerce_featuredcolors>
+            <general>
+                <enabled>1</enabled>
+                <color_attribute>color</color_attribute>
+                <!-- Off by default. -->
+                <sync_base_image>0</sync_base_image>
+            </general>
+        </commerce_featuredcolors>
+    </default>
+</config>
