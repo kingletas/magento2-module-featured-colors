@@ -1,11 +1,10 @@
 <?php
 /**
- * FeaturedColorTest.php
- *
- * @package     Commerce_FeaturedColors
- * @copyright   Copyright (c) the Commerce modules authors
- * @license     OSL-3.0 https://opensource.org/licenses/OSL-3.0
+ * @package   Commerce_FeaturedColors
+ * @copyright Copyright (c) the Commerce modules authors
+ * @license   OSL-3.0 https://opensource.org/licenses/OSL-3.0
  */
+
 declare(strict_types=1);
 
 namespace Commerce\FeaturedColors\Test\Unit\Model\ResourceModel;
