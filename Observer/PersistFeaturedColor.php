@@ -14,7 +14,7 @@ use Commerce\FeaturedColors\Model\Config;
 use Commerce\FeaturedColors\Model\FeaturedColorApplier;
 use Commerce\FeaturedColors\Model\ResourceModel\FeaturedColor as FeaturedColorResource;
 use Commerce\FeaturedColors\Plugin\Catalog\Adminhtml\CaptureFeaturedColorPlugin;
-use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Product;
 use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
@@ -44,7 +44,7 @@ class PersistFeaturedColor implements ObserverInterface
 
         $product = $observer->getEvent()->getData('product');
 
-        if (!$product instanceof ProductInterface) {
+        if (!$product instanceof Product) {
             return;
         }
 

@@ -11,6 +11,7 @@ namespace Commerce\FeaturedColors\Model\Catalog;
 
 use Magento\Eav\Api\AttributeRepositoryInterface;
 use Magento\Eav\Api\Data\AttributeInterface;
+use Magento\Eav\Model\Entity\Attribute\AbstractAttribute;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Catalog\Model\Product as ProductEntity;
 
@@ -102,13 +103,14 @@ class ColorOptionMap
 
         $attribute = $this->getAttribute();
 
-        if (!$attribute->usesSource()) {
+        // Only an EAV attribute has a source model to read labels from.
+        if (!$attribute instanceof AbstractAttribute || !$attribute->usesSource()) {
             return;
         }
 
         // Admin-scope labels: store-scoped ones would make an import behave
         // differently depending on which store happened to be current.
-        foreach ($attribute->getSource()->getAllOptions(false) as $option) {
+        foreach ($attribute->getSource()->getAllOptions() as $option) {
             $label = (string) ($option['label'] ?? '');
             $value = $option['value'] ?? null;
 

@@ -54,7 +54,6 @@ class FeaturedColorImport extends AbstractEntity
         self::COLUMN_STORE_ID,
     ];
 
-    /** @var string[] */
     protected string $masterAttributeCode = self::COLUMN_SKU;
 
     public function __construct(
@@ -64,7 +63,7 @@ class FeaturedColorImport extends AbstractEntity
         ProcessingErrorAggregatorInterface $errorAggregator,
         JsonHelper $jsonHelper,
         private readonly FeaturedColorApplier $applier,
-        private readonly FeaturedColorResource $resource,
+        private readonly FeaturedColorResource $featuredColorResource,
         private readonly ResourceConnection $resourceConnection
     ) {
         $this->_importExportData = $importExportData;
@@ -215,7 +214,7 @@ class FeaturedColorImport extends AbstractEntity
             $productIds = $this->resolveProductIds($skus);
 
             if ($productIds !== []) {
-                $removed += $this->resource->deleteByProducts($productIds, $storeId);
+                $removed += $this->featuredColorResource->deleteByProducts($productIds, $storeId);
             }
         }
 

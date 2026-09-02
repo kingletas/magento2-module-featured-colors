@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Commerce\FeaturedColors\Plugin\Catalog\Adminhtml;
 
-use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\Product;
 use Magento\Catalog\Controller\Adminhtml\Product\Initialization\Helper;
 use Magento\Framework\App\RequestInterface;
 
@@ -38,8 +38,8 @@ class CaptureFeaturedColorPlugin
      */
     public function afterInitialize(
         Helper $subject,
-        ProductInterface $product
-    ): ProductInterface {
+        Product $product
+    ): Product {
         $posted = $this->request->getParam(self::REQUEST_KEY);
 
         if (!is_array($posted)) {
