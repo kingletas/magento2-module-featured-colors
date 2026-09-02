@@ -22,5 +22,11 @@ parameters:
         # __() returns a Phrase, and Magento's own importers and controllers
         # hand one to these APIs; the parameters are documented as string and
         # never were.
-        - '#of method Magento\\ImportExport\\Model\\Import\\Entity\\AbstractEntity::addMessageTemplate\(\) expects string, Magento\\Framework\\Phrase given#'
-        - '#of method Magento\\Framework\\Message\\ManagerInterface::add\w+Message\(\) expects string, Magento\\Framework\\Phrase given#'
+        -
+            message: '#of method Magento\\ImportExport\\Model\\Import\\Entity\\AbstractEntity::addMessageTemplate\(\) expects string, Magento\\Framework\\Phrase given#'
+            # The framework's docblock varies across the versions this package supports.
+            reportUnmatched: false
+        -
+            message: '#of method Magento\\Framework\\Message\\ManagerInterface::add\w+Message\(\) expects string, Magento\\Framework\\Phrase given#'
+            # The framework's docblock varies across the versions this package supports.
+            reportUnmatched: false

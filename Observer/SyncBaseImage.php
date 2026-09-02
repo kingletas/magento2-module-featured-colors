@@ -39,23 +39,7 @@ class SyncBaseImage implements ObserverInterface
             return;
         }
 
-        // Group by store and by image path so each distinct value is one
-        // statement, rather than one statement per product.
-        $byStoreAndImage = [];
-
-        foreach ($rows as $row) {
-            $imagePath = $row[FeaturedColorInterface::IMAGE_PATH] ?? null;
-            $productId = (int) ($row[FeaturedColorInterface::PRODUCT_ID] ?? 0);
-
-            if ($productId === 0 || !is_string($imagePath) || $imagePath === '') {
-                continue;
-            }
-
-            $storeId = (int) ($row[FeaturedColorInterface::STORE_ID] ?? 0);
-            $byStoreAndImage[$storeId][$imagePath][] = $productId;
-        }
-
-        foreach ($byStoreAndImage as $storeId => $byImage) {
+        foreach ($this->groupByStoreAndImage($rows) as $storeId => $byImage) {
             foreach ($byImage as $imagePath => $productIds) {
                 $this->updateImage($productIds, (string) $imagePath, (int) $storeId);
             }
@@ -83,5 +67,30 @@ class SyncBaseImage implements ObserverInterface
                 ['exception' => $e, 'store_id' => $storeId, 'product_count' => count($productIds)]
             );
         }
+    }
+
+    /**
+     * Each distinct store and image is one statement, rather than one per product.
+     *
+     * @param  array<mixed> $rows
+     * @return array<int, array<string, int[]>>
+     */
+    private function groupByStoreAndImage(array $rows): array
+    {
+        $byStoreAndImage = [];
+
+        foreach ($rows as $row) {
+            $imagePath = $row[FeaturedColorInterface::IMAGE_PATH] ?? null;
+            $productId = (int) ($row[FeaturedColorInterface::PRODUCT_ID] ?? 0);
+
+            if ($productId === 0 || !is_string($imagePath) || $imagePath === '') {
+                continue;
+            }
+
+            $storeId = (int) ($row[FeaturedColorInterface::STORE_ID] ?? 0);
+            $byStoreAndImage[$storeId][$imagePath][] = $productId;
+        }
+
+        return $byStoreAndImage;
     }
 }

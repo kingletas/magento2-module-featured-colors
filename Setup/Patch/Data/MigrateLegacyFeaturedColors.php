@@ -63,30 +63,7 @@ class MigrateLegacyFeaturedColors implements DataPatchInterface
             }
 
             $offset += self::CHUNK_SIZE;
-            $batch = [];
-
-            foreach ($rows as $row) {
-                $decoded = $this->decode((string) ($row[$this->legacyColumn] ?? ''));
-
-                if ($decoded === null) {
-                    continue;
-                }
-
-                $batch[] = [
-                    FeaturedColorInterface::PRODUCT_ID => (int) $row['product_id'],
-                    FeaturedColorInterface::STORE_ID => (int) ($row['store_id'] ?? 0),
-                    FeaturedColorInterface::CHILD_PRODUCT_ID => isset($decoded['child_id'])
-                        ? (int) $decoded['child_id']
-                        : null,
-                    FeaturedColorInterface::COLOR_OPTION_ID => null,
-                    FeaturedColorInterface::COLOR_LABEL => isset($decoded['label'])
-                        ? (string) $decoded['label']
-                        : null,
-                    // The legacy full URL is not carried over; the next apply
-                    // recomputes the media path.
-                    FeaturedColorInterface::IMAGE_PATH => null,
-                ];
-            }
+            $batch = $this->rowsToInsert($rows);
 
             if ($batch !== []) {
                 $connection->insertOnDuplicate($targetTable, $batch, [
@@ -135,5 +112,41 @@ class MigrateLegacyFeaturedColors implements DataPatchInterface
     public function getAliases(): array
     {
         return [];
+    }
+
+    /**
+     * Legacy rows that decode, in the shape the target table takes.
+     *
+     * @param  array<mixed> $rows
+     * @return array<int, array<string, int|string|null>>
+     */
+    private function rowsToInsert(array $rows): array
+    {
+        $batch = [];
+
+        foreach ($rows as $row) {
+            $decoded = $this->decode((string) ($row[$this->legacyColumn] ?? ''));
+
+            if ($decoded === null) {
+                continue;
+            }
+
+            $batch[] = [
+                FeaturedColorInterface::PRODUCT_ID => (int) $row['product_id'],
+                FeaturedColorInterface::STORE_ID => (int) ($row['store_id'] ?? 0),
+                FeaturedColorInterface::CHILD_PRODUCT_ID => isset($decoded['child_id'])
+                    ? (int) $decoded['child_id']
+                    : null,
+                FeaturedColorInterface::COLOR_OPTION_ID => null,
+                FeaturedColorInterface::COLOR_LABEL => isset($decoded['label'])
+                    ? (string) $decoded['label']
+                    : null,
+                // The legacy full URL is not carried over; the next apply
+                // recomputes the media path.
+                FeaturedColorInterface::IMAGE_PATH => null,
+            ];
+        }
+
+        return $batch;
     }
 }
