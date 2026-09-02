@@ -3,6 +3,20 @@
     "description": "Choose which colour variant a configurable product leads with in listings, per store. Admin form field, product grid column and CSV import.",
     "type": "magento2-module",
     "license": "OSL-3.0",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/kingletas/magento2-module-foundation"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/kingletas/magento2-module-logger"
+        }
+    ],
     "require": {
         "php": ">=8.4",
         "commerce/module-foundation": "^1.0",
