@@ -14,7 +14,7 @@ use Magento\Catalog\Model\Product;
 /**
  * The product a save observer is handed.
  *
- * @SuppressWarnings(PHPMD.MissingConstructor)
+ * @SuppressWarnings("PHPMD.MissingConstructor")
  */
 class FormProduct extends Product
 {

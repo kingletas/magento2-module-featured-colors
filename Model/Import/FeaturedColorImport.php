@@ -118,7 +118,7 @@ class FeaturedColorImport extends AbstractEntity
 
         $storeId = $rowData[self::COLUMN_STORE_ID] ?? '0';
 
-        if ($storeId !== '' && $storeId !== null && !ctype_digit((string) $storeId)) {
+        if ($storeId !== '' && !ctype_digit((string) $storeId)) {
             $this->addRowError('StoreIdMustBeNumeric', $rowNum);
         }
 

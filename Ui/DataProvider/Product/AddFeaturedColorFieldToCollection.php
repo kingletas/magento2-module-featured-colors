@@ -34,7 +34,7 @@ class AddFeaturedColorFieldToCollection implements AddFieldToCollectionInterface
      * @param string      $field
      * @param string|null $alias
      *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      *
      * phpcs:disable SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */

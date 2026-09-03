@@ -15,7 +15,7 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 /**
  * Magento requires the _construct() initialiser, which trips PHPMD naming.
  *
- * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @SuppressWarnings("PHPMD.CamelCaseMethodName")
  */
 class FeaturedColor extends AbstractDb
 {

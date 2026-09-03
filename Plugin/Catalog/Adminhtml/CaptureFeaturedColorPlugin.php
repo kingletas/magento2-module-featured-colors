@@ -34,7 +34,7 @@ class CaptureFeaturedColorPlugin
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     public function afterInitialize(
         Helper $subject,
